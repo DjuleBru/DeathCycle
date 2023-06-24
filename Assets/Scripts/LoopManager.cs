@@ -11,13 +11,13 @@ public class LoopManager : MonoBehaviour {
     private Dictionary<int, bool> playerIsSpecial = new Dictionary<int, bool>();
     private Dictionary<int, bool> playerIsIdle = new Dictionary<int, bool>();
 
-    private Player player;
+    private Champion player;
     private Vector3 playerPosition;
 
     private List<PlayerActions> playerActions = new List<PlayerActions>();
     private List<PlayerActions> playerActionsPlayback = new List<PlayerActions>();
 
-    private float loopTime = 3f;
+    private float loopTime = 100f;
     private float loopTimer = 0f;
     private int loopIndex = 0;
 
@@ -25,7 +25,7 @@ public class LoopManager : MonoBehaviour {
     public bool IsRecording { get { return isRecording; } }
 
     public void Start() {
-        player = GetComponent<Player>();
+        player = GetComponent<Champion>();
     }
 
     void Update() {

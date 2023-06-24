@@ -9,17 +9,22 @@ public enum PlayerActions {
     special,
 }
 
-public class Player : MonoBehaviour
+public class Champion : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 2f;
     private LoopManager loopManager;
 
+    private Rigidbody2D rb;
+    private ChampionMovement championMovement;
     private ParticleSystem Specialps;
     private List<PlayerActions> playerActions = new List<PlayerActions>();
 
     private void Start() {
         loopManager = GetComponent<LoopManager>();
         Specialps = GetComponentInChildren<ParticleSystem>();
+        rb = GetComponent<Rigidbody2D>();
+        championMovement = GetComponent<ChampionMovement>();
+
     }
     void Update()
     {
@@ -36,14 +41,6 @@ public class Player : MonoBehaviour
     public void HandleMovement() {
         Vector2 inputVector = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.Z)) {
-            inputVector += Vector2.up;
-        }
-
-        if (Input.GetKey(KeyCode.S)) {
-            inputVector += Vector2.down;
-        }
-
         if (Input.GetKey(KeyCode.Q)) {
             inputVector += Vector2.left;
         }
@@ -52,11 +49,9 @@ public class Player : MonoBehaviour
             inputVector += Vector2.right;
         }
 
-        inputVector = inputVector.normalized;
-        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0);
-
-        transform.position += moveDir * Time.deltaTime * moveSpeed;
+        rb.velocity = inputVector * moveSpeed * Time.deltaTime;
     }
+
     private void HandleInputActions() {
         if (Input.GetKey(KeyCode.E)) {
             playerActions.Add(PlayerActions.attack);
