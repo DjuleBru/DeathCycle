@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.EditorTools;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ChampionMovement : MonoBehaviour
+public class ChampionBehaviour : MonoBehaviour
 {
 
     #region PLAYER DATA
@@ -34,30 +35,36 @@ public class ChampionMovement : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     #endregion
 
-    [SerializeField] private InputManager inputManager;
-
-
+    #region TIMERS
     private float lastGroundedTime;
     private float lastPressedJumpTime;
-    private Rigidbody2D rb;
-    private float moveInput;
+    #endregion
 
+    #region BOOL CHECKERS
     private bool isGrounded;
     private bool isJumping;
     private bool isJumpFalling;
     private bool jumpInputReleased;
     private bool isJumpCut;
+    #endregion
+
+    private float moveInput;
+
+    private ChampionRecPlaybackManager loopManager;
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private ChampionActions championActionsThisFrame = new ChampionActions();
+    private Rigidbody2D rb;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         inputManager.OnJumpPressed += InputManager_OnJumpPressed;
         inputManager.OnJumpReleased += InputManager_OnJumpReleased;
+        loopManager = GetComponent<ChampionRecPlaybackManager>();
     }
 
     void Update()
     {
-
         #region TIMERS
         lastGroundedTime -= Time.deltaTime;
         lastPressedJumpTime -= Time.deltaTime;
@@ -88,10 +95,15 @@ public class ChampionMovement : MonoBehaviour
         }
 
         #endregion
+
+        #region CHAMPION ACTIONS RECORDING
+        if (loopManager.IsRecording) {
+            championActionsThisFrame.moveDir = moveInput;
+        }
+        #endregion
     }
 
     private void FixedUpdate() {
-       // Debug.Log(isJumpCut);
         HandleMovement(moveInput);
 
         #region JUMP
@@ -112,6 +124,18 @@ public class ChampionMovement : MonoBehaviour
         } else {
             // Default gravity if grounded
             SetGravityScale(gravityScale);
+        }
+        #endregion
+
+        #region CHAMPION ACTIONS PLAYBACK
+        if (!loopManager.IsRecording) {
+            HandleMovement(championActionsThisFrame.moveDir);
+            if (championActionsThisFrame.JumpPressed) {
+                JumpPressed();
+            }
+            if (championActionsThisFrame.JumpReleased) {
+                JumpReleased();
+            }
         }
         #endregion
     }
@@ -167,11 +191,23 @@ public class ChampionMovement : MonoBehaviour
 
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
         JumpPressed();
+        championActionsThisFrame.JumpPressed = true;
+        championActionsThisFrame.JumpReleased = false;
     }
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
         JumpReleased();
+        championActionsThisFrame.JumpReleased = true;
+        championActionsThisFrame.JumpPressed = false;
     }
     public void SetGravityScale(float scale) {
         rb.gravityScale = scale;
+    }
+
+    public ChampionActions GetChampionActionsThisFrame() {
+        return championActionsThisFrame;
+    }
+
+    public void SetChampionActionsThisFrame(ChampionActions championActions) {
+        championActionsThisFrame = championActions;
     }
 }
