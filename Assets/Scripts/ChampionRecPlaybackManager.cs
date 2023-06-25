@@ -4,69 +4,53 @@ using UnityEngine;
 
 public class ChampionRecPlaybackManager : MonoBehaviour {
 
-    // Dictionaries relative to this loop's player data
+    // Dictionary relative to this loop's player data
     private Dictionary<int, ChampionActions> championActionsRecord = new Dictionary<int, ChampionActions>();
 
-    private Champion champion;
-    private ChampionBehaviour championMovement;
+    private ChampionBehaviour championBehaviour;
     private ChampionActions championActions;
 
-    private float loopTime = 3f;
-    private float loopTimer = 0f;
-    private int loopIndex = 0;
-
-    private bool isRecording = true;
-    public bool IsRecording { get { return isRecording; } }
+    private int recordingLoopIndex = 0;
+    private int playbackLoopIndex = 0;
 
     public void Start() {
-        champion = GetComponent<Champion>();
-        championMovement = GetComponent<ChampionBehaviour>();
+        championBehaviour = GetComponent<ChampionBehaviour>();
     }
 
     void Update() {
-        if (!isRecording) {
+        if (!LoopManager.Instance.IsRecording) {
             PlayBack();
         }
-           
+
     }
 
     private void LateUpdate() {
-        if (isRecording) {
+        if (LoopManager.Instance.IsRecording) {
             Recording();
         }
     }
 
     void Recording() {
-        if (loopTimer <= loopTime) {
+        championActions = championBehaviour.GetChampionActionsThisFrame();
 
-            championActions = championMovement.GetChampionActionsThisFrame();
-
-            championActionsRecord[loopIndex] = new ChampionActions {
-                Attack = championActions.Attack,
-                moveDir = championActions.moveDir, 
-                JumpPressed = championActions.JumpPressed,
-                JumpReleased = championActions.JumpReleased,
-                Special = championActions.Special,
-            };
-
-            loopTimer += Time.deltaTime;
-            loopIndex++;
-        } else {
-            isRecording = false;
-            loopTimer = 0;
-            loopIndex = 0;
-        }
+        championActionsRecord[recordingLoopIndex] = new ChampionActions {
+            Attack = championActions.Attack,
+            moveDir = championActions.moveDir,
+            JumpPressed = championActions.JumpPressed,
+            JumpReleased = championActions.JumpReleased,
+            Special = championActions.Special,
+        };
+        recordingLoopIndex++;
     }
 
     void PlayBack() {
-        if (loopIndex < championActionsRecord.Count) {
+        if (playbackLoopIndex < championActionsRecord.Count) {
 
-            championActions = championActionsRecord[loopIndex];
+            championActions = championActionsRecord[playbackLoopIndex];
 
-            championMovement.SetChampionActionsThisFrame(championActions);
+            championBehaviour.SetChampionActionsThisFrame(championActions);
 
-            loopTimer += Time.deltaTime;
-            loopIndex++;
+            playbackLoopIndex++;
         }
     }
 }

@@ -97,7 +97,7 @@ public class ChampionBehaviour : MonoBehaviour
         #endregion
 
         #region CHAMPION ACTIONS RECORDING
-        if (loopManager.IsRecording) {
+        if (LoopManager.Instance.IsRecording) {
             championActionsThisFrame.moveDir = moveInput;
         }
         #endregion
@@ -128,7 +128,7 @@ public class ChampionBehaviour : MonoBehaviour
         #endregion
 
         #region CHAMPION ACTIONS PLAYBACK
-        if (!loopManager.IsRecording) {
+        if (!LoopManager.Instance.IsRecording) {
             HandleMovement(championActionsThisFrame.moveDir);
             if (championActionsThisFrame.JumpPressed) {
                 JumpPressed();
