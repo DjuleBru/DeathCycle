@@ -8,7 +8,7 @@ public class ObjectPool : MonoBehaviour {
     
     private GameObject[] pool;
 
-    private int poolSize;
+    private int poolSize = 5;
 
     private void Awake() {
         PopulatePool();
@@ -21,6 +21,7 @@ public class ObjectPool : MonoBehaviour {
 
     private void LoopManager_OnRecordingStarted(object sender, LoopManager.OnRecordingEventArgs e) {
         pool[e.loopNumber].SetActive(true);
+        pool[e.loopNumber].GetComponent<Champion>().SetSpawnedLoopNumber(e.loopNumber);
     }
 
     private void LoopManager_OnPlaybackStarted(object sender, LoopManager.OnRecordingEventArgs e) {

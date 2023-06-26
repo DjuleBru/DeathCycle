@@ -29,6 +29,7 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
         } else { 
             // Loop is recording
             if (champion.SpawnedLoopNumber == LoopManager.Instance.LoopNumber) {
+                Debug.Log("Recording " + champion.SpawnedLoopNumber + " On loop " + LoopManager.Instance.LoopNumber);
                 // Loop Number set on Spawn = Active loop number
                 Recording();
             } else {
@@ -55,7 +56,6 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
 
             championActions = championActionsRecord[playbackLoopIndex];
             championBehaviour.SetChampionActionsThisFrame(championActions);
-            Debug.Log(LoopManager.Instance.LoopNumber + " " + playbackLoopIndex + " " + championActionsRecord[playbackLoopIndex].moveDir);
 
             playbackLoopIndex++;
         }

@@ -106,7 +106,7 @@ public class ChampionBehaviour : MonoBehaviour
         #endregion
 
         #region MOVEMENT
-        if (LoopManager.Instance.IsRecording) {
+        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             HandleMovement(moveInput);
         }
         #endregion
@@ -183,18 +183,18 @@ public class ChampionBehaviour : MonoBehaviour
     }
 
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
-        if (LoopManager.Instance.IsRecording) {
+        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpPressed();
+            championActionsThisFrame.JumpPressed = true;
+            championActionsThisFrame.JumpReleased = false;
         }
-        championActionsThisFrame.JumpPressed = true;
-        championActionsThisFrame.JumpReleased = false;
     }
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
-        if (LoopManager.Instance.IsRecording) {
+        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpReleased();
+            championActionsThisFrame.JumpReleased = true;
+            championActionsThisFrame.JumpPressed = false;
         }
-        championActionsThisFrame.JumpReleased = true;
-        championActionsThisFrame.JumpPressed = false;
     }
     public void SetGravityScale(float scale) {
         rb.gravityScale = scale;
