@@ -5,16 +5,25 @@ using UnityEditor.EditorTools;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
-public class ChampionBehaviour : MonoBehaviour
+public class ChampionBehaviourPlayback : MonoBehaviour
 {
-    private InputManager inputManager;
-    [SerializeField] private ChampionActions championActionsThisFrame = new ChampionActions();
-    private Rigidbody2D rb;
-    private float moveInput;
-    [SerializeField] private ChampionSO championSO;
-    private Champion champion;
+
+    #region PLAYER DATA
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float velPower;
+    [SerializeField] private float acceleration;
+    [SerializeField] private float deceleration;
+    [SerializeField] private float frictionAmount;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpCoyoteTime = 0.2f;
+    [SerializeField] private float jumpInputBufferTime = 0.1f;
+    [SerializeField] private float jumpCutMultiplier = 0.5f;
+    [SerializeField] private float gravityScale = 1f;
+    [SerializeField] private float jumpCutGravityMult = 2f;
+    [SerializeField] private float maxFallSpeed;
+
+    #endregion
 
     #region CHECK PARAMETERS
     [SerializeField] private Transform _groundCheckPoint;
@@ -36,16 +45,17 @@ public class ChampionBehaviour : MonoBehaviour
     private bool isJumping;
     private bool isJumpFalling;
     private bool jumpInputReleased;
-    private bool isJumpCut; 
+    private bool isJumpCut;
     #endregion
+
+    private float moveInput;
+
+    [SerializeField] private ChampionActions championActionsThisFrame = new ChampionActions();
+    private Rigidbody2D rb;
 
     void Start()
     {
-        inputManager = FindObjectOfType<InputManager>();
         rb = GetComponent<Rigidbody2D>();
-        champion = GetComponent<Champion>();
-        inputManager.OnJumpPressed += InputManager_OnJumpPressed;
-        inputManager.OnJumpReleased += InputManager_OnJumpReleased;
     }
 
     void Update()
@@ -55,17 +65,11 @@ public class ChampionBehaviour : MonoBehaviour
         lastPressedJumpTime -= Time.deltaTime;
         #endregion
 
-        #region INPUTHANDLER
-        if (LoopManager.Instance.IsRecording) {
-            moveInput = inputManager.GetMoveInput();
-        }
-        #endregion
-
         #region COLLISION CHECKS
         if (!isJumping) {
             // Grounded check
             if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer)) {
-                lastGroundedTime = championSO.jumpCoyoteTime;
+                lastGroundedTime = jumpCoyoteTime;
             }
         }
         #endregion
@@ -82,18 +86,13 @@ public class ChampionBehaviour : MonoBehaviour
         }
 
         #endregion
-
-        #region CHAMPION ACTIONS RECORDING
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            championActionsThisFrame.moveDir = moveInput;
-        }
-        #endregion
     }
 
     private void FixedUpdate() {
+        HandleMovement(moveInput);
 
         #region CHAMPION ACTIONS PLAYBACK
-        if (!LoopManager.Instance.IsRecording || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
+        if (!LoopManager.Instance.IsRecording) {
             HandleMovement(championActionsThisFrame.moveDir);
             if (championActionsThisFrame.JumpPressed) {
                 JumpPressed();
@@ -103,12 +102,6 @@ public class ChampionBehaviour : MonoBehaviour
             }
         }
 
-        #endregion
-
-        #region MOVEMENT
-        if (LoopManager.Instance.IsRecording) {
-            HandleMovement(moveInput);
-        }
         #endregion
 
         #region JUMP
@@ -124,26 +117,27 @@ public class ChampionBehaviour : MonoBehaviour
 
         // Higher gravity if jump button released and speed reduction
         if (isJumpCut) {
-            SetGravityScale(championSO.gravityScale * championSO.jumpCutGravityMult);
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -championSO.maxFallSpeed));
+            SetGravityScale(gravityScale * jumpCutGravityMult);
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
         } else {
             // Default gravity if grounded
-            SetGravityScale(championSO.gravityScale);
+            SetGravityScale(gravityScale);
         }
         #endregion
+
     }
 
     private void HandleMovement(float moveInput) {
         #region Movement
 
         // targetSpeet = speed to reach
-        float targetSpeed = moveInput * championSO.moveSpeed;
+        float targetSpeed = moveInput * moveSpeed;
         // calculate speed Diff between current speed and target speed
         float speedDiff = targetSpeed - rb.velocity.x;
         // acceleration or deceleration in regards to the situation (have we reached our targetspeed?)
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? championSO.acceleration: championSO.deceleration;
+        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration: deceleration;
         // calculate force to add to rb
-        float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, championSO.velPower) * Mathf.Sign(speedDiff);
+        float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, velPower) * Mathf.Sign(speedDiff);
 
         rb.AddForce(movement * Vector2.right);
         #endregion
@@ -153,7 +147,7 @@ public class ChampionBehaviour : MonoBehaviour
         if (isGrounded && Mathf.Abs(moveInput) < 0.01f) {
 
             // Then we use either friction amount or velocity 
-            float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), Mathf.Abs(championSO.frictionAmount));
+            float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), Mathf.Abs(frictionAmount));
             // Set to movement direction
             amount *= Mathf.Sign(rb.velocity.x);
 
@@ -170,7 +164,7 @@ public class ChampionBehaviour : MonoBehaviour
         lastPressedJumpTime = 0;
         isJumping = true;
         isJumpCut = false;
-        rb.AddForce(Vector2.up * championSO.jumpForce, ForceMode2D.Impulse);
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
     private void JumpReleased() {
@@ -179,23 +173,9 @@ public class ChampionBehaviour : MonoBehaviour
 
     private void JumpPressed() {
         isJumpCut = false;
-        lastPressedJumpTime = championSO.jumpInputBufferTime;
+        lastPressedJumpTime = jumpInputBufferTime;
     }
 
-    private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
-        if (LoopManager.Instance.IsRecording) {
-            JumpPressed();
-        }
-        championActionsThisFrame.JumpPressed = true;
-        championActionsThisFrame.JumpReleased = false;
-    }
-    private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
-        if (LoopManager.Instance.IsRecording) {
-            JumpReleased();
-        }
-        championActionsThisFrame.JumpReleased = true;
-        championActionsThisFrame.JumpPressed = false;
-    }
     public void SetGravityScale(float scale) {
         rb.gravityScale = scale;
     }
@@ -207,5 +187,4 @@ public class ChampionBehaviour : MonoBehaviour
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
         championActionsThisFrame = championActions;
     }
-
 }

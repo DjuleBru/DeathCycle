@@ -9,48 +9,62 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
 
     private ChampionBehaviour championBehaviour;
     private ChampionActions championActions;
+    private Champion champion;
 
     private int recordingLoopIndex = 0;
     private int playbackLoopIndex = 0;
 
     public void Start() {
         championBehaviour = GetComponent<ChampionBehaviour>();
+        champion = GetComponent<Champion>();
+        LoopManager.Instance.OnRecordingStarted += LoopManager_OnRecordingStarted;
+        LoopManager.Instance.OnPlaybackStarted += LoopManager_OnPlaybackStarted;
     }
 
-    void Update() {
+
+    private void FixedUpdate() {
         if (!LoopManager.Instance.IsRecording) {
+            // Loop is playbacking
             PlayBack();
-        }
-
-    }
-
-    private void LateUpdate() {
-        if (LoopManager.Instance.IsRecording) {
-            Recording();
-        }
+        } else { 
+            // Loop is recording
+            if (champion.SpawnedLoopNumber == LoopManager.Instance.LoopNumber) {
+                // Loop Number set on Spawn = Active loop number
+                Recording();
+            } else {
+                PlayBack();
+            }
+        } 
     }
 
     void Recording() {
-        championActions = championBehaviour.GetChampionActionsThisFrame();
+            championActions = championBehaviour.GetChampionActionsThisFrame();
 
-        championActionsRecord[recordingLoopIndex] = new ChampionActions {
-            Attack = championActions.Attack,
-            moveDir = championActions.moveDir,
-            JumpPressed = championActions.JumpPressed,
-            JumpReleased = championActions.JumpReleased,
-            Special = championActions.Special,
-        };
-        recordingLoopIndex++;
+            championActionsRecord[recordingLoopIndex] = new ChampionActions {
+                Attack = championActions.Attack,
+                moveDir = championActions.moveDir,
+                JumpPressed = championActions.JumpPressed,
+                JumpReleased = championActions.JumpReleased,
+                Special = championActions.Special,
+            };
+            recordingLoopIndex++;
     }
 
     void PlayBack() {
         if (playbackLoopIndex < championActionsRecord.Count) {
 
             championActions = championActionsRecord[playbackLoopIndex];
-
             championBehaviour.SetChampionActionsThisFrame(championActions);
+            Debug.Log(LoopManager.Instance.LoopNumber + " " + playbackLoopIndex + " " + championActionsRecord[playbackLoopIndex].moveDir);
 
             playbackLoopIndex++;
         }
+    }
+    private void LoopManager_OnRecordingStarted(object sender, LoopManager.OnRecordingEventArgs e) {
+        playbackLoopIndex = 0;
+    }
+
+    private void LoopManager_OnPlaybackStarted(object sender, LoopManager.OnRecordingEventArgs e) {
+        playbackLoopIndex = 0;
     }
 }

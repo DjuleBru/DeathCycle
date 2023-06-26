@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,14 @@ using UnityEngine;
 public class LoopManager : MonoBehaviour {
     public static LoopManager Instance { get; private set; }
 
-    private float loopTime = 2f;
+    public event EventHandler<OnRecordingEventArgs> OnRecordingStarted;
+    public event EventHandler<OnRecordingEventArgs> OnPlaybackStarted;
+
+    public class OnRecordingEventArgs : EventArgs{
+        public int loopNumber;
+    };
+
+    private float loopTime = 3f;
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
 
@@ -22,15 +30,25 @@ public class LoopManager : MonoBehaviour {
         Instance = this;
     }
 
-    void Update() {
-        Debug.Log(loopNumber);
+    void FixedUpdate() {
         // 1: recording
+        if (loopRecordingTimer == 0) {
+            OnRecordingStarted?.Invoke(this, new OnRecordingEventArgs {
+                loopNumber = loopNumber
+            });
+        }
         if (loopRecordingTimer <= loopTime) {
             isRecording = true;
             loopRecordingTimer += Time.deltaTime;
         }
         // 2: recording end
         else {
+            if (loopPlaybackTimer == 0) {
+                OnPlaybackStarted?.Invoke(this, new OnRecordingEventArgs {
+                    loopNumber = loopNumber
+                });
+            }
+
             // 3: playback 
             if (loopPlaybackTimer <= loopTime) {
                 loopPlaybackTimer += Time.deltaTime;
