@@ -7,6 +7,7 @@ public class InputRecorder : MonoBehaviour
     private InputManager inputManager;
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
+
     private void Awake() {
         inputManager = FindObjectOfType<InputManager>();
     }
@@ -20,16 +21,18 @@ public class InputRecorder : MonoBehaviour
 
     private void FixedUpdate() {
         championActionsThisFrame.moveDir = inputManager.GetMoveInput();
+        championActionsThisFrame.mousePos = inputManager.GetMousePositionWorldSpace();
+
     }
 
     private void InputManager_OnAttackReleased(object sender, System.EventArgs e) {
-        championActionsThisFrame.AttackPressed = false;
-        championActionsThisFrame.AttackReleased = true;
+            championActionsThisFrame.AttackPressed = false;
+            championActionsThisFrame.AttackReleased = true;
     }
 
     private void InputManager_OnAttackPressed(object sender, System.EventArgs e) {
-        championActionsThisFrame.AttackPressed = true;
-        championActionsThisFrame.AttackReleased = false;
+            championActionsThisFrame.AttackPressed = true;
+            championActionsThisFrame.AttackReleased = false;
     }
 
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
@@ -38,7 +41,11 @@ public class InputRecorder : MonoBehaviour
     }
 
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
-        championActionsThisFrame.JumpPressed = true;
-        championActionsThisFrame.JumpReleased = false;
+            championActionsThisFrame.JumpPressed = true;
+            championActionsThisFrame.JumpReleased = false;
+    }
+
+    public ChampionActions GetChampionActionsThisFrame() {
+        return championActionsThisFrame;
     }
 }

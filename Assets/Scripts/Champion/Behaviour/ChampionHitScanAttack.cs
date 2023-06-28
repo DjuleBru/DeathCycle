@@ -17,10 +17,10 @@ public class ChampionHitScanAttack : MonoBehaviour
     }
 
     private void ChampionAim_OnShoot(object sender, ChampionAim.OnShootEventArgs e) {
-        CreateWeaponTracer(e.weaponEndPointPosition, e.shootPosition);
+        CreateWeaponTracer(e.weaponEndPointPosition, e.attackDir);
 
         Debug.Log("Weapon" + e.weaponEndPointPosition);
-        Debug.Log("shoot" + e.shootPosition);
+        Debug.Log("shoot" + e.attackDir);
         
     }
 

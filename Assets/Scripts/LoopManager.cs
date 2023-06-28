@@ -17,7 +17,7 @@ public class LoopManager : MonoBehaviour {
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
 
-    private int loopNumber = 1;
+    private int loopNumber = 0;
     private bool isRecording;
 
     public bool IsRecording { get { return isRecording; } }

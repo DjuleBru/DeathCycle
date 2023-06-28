@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ChampionProjectileAttack : MonoBehaviour
 {
+
     private ChampionAim championAim;
     private Champion champion;
     private ChampionSO championSO;
@@ -25,15 +26,12 @@ public class ChampionProjectileAttack : MonoBehaviour
     }
 
     private void ChampionAim_OnShoot(object sender, ChampionAim.OnShootEventArgs e) {
+            Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
+            Vector3 attackDir = e.attackDir;
 
-        Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
-        Vector3 shootPosition = e.shootPosition;
+            Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
 
-        Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
-        Vector3 shootDir = shootPosition - weaponEndPointPosition;
-
-        bulletTransform.GetComponent<Projectile>().Setup(shootDir, championAttackDamage);
+            bulletTransform.GetComponent<Projectile>().Setup(attackDir, championAttackDamage);
     }
-
 
 }

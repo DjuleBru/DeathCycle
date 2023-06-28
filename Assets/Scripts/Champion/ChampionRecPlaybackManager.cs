@@ -7,16 +7,23 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
     // Dictionary relative to this loop's player data
     private Dictionary<int, ChampionActions> championActionsRecord = new Dictionary<int, ChampionActions>();
 
-    private ChampionBehaviour championBehaviour;
+    private InputRecorder inputRecorder;
+    private ChampionMovement championMovement;
+    private ChampionAim championAim;
     private ChampionActions championActions;
     private Champion champion;
 
     private int recordingLoopIndex = 0;
     private int playbackLoopIndex = 0;
 
-    public void Start() {
-        championBehaviour = GetComponent<ChampionBehaviour>();
+    private void Awake() {
+        inputRecorder = FindObjectOfType<InputRecorder>();
+        championMovement = GetComponent<ChampionMovement>();
+        championAim = GetComponent<ChampionAim>();
         champion = GetComponent<Champion>();
+    }
+
+    public void Start() {
         LoopManager.Instance.OnRecordingStarted += LoopManager_OnRecordingStarted;
         LoopManager.Instance.OnPlaybackStarted += LoopManager_OnPlaybackStarted;
     }
@@ -38,10 +45,12 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
     }
 
     void Recording() {
-            championActions = championBehaviour.GetChampionActionsThisFrame();
+            championActions = inputRecorder.GetChampionActionsThisFrame();
 
             championActionsRecord[recordingLoopIndex] = new ChampionActions {
                 AttackPressed = championActions.AttackPressed,
+                AttackReleased = championActions.AttackReleased,
+                mousePos = championActions.mousePos,
                 moveDir = championActions.moveDir,
                 JumpPressed = championActions.JumpPressed,
                 JumpReleased = championActions.JumpReleased,
@@ -54,7 +63,8 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
         if (playbackLoopIndex < championActionsRecord.Count) {
 
             championActions = championActionsRecord[playbackLoopIndex];
-            championBehaviour.SetChampionActionsThisFrame(championActions);
+            championMovement.SetChampionActionsThisFrame(championActions);
+            championAim.SetChampionActionsThisFrame(championActions);
 
             playbackLoopIndex++;
         }

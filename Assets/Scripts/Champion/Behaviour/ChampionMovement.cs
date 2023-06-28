@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class ChampionBehaviour : MonoBehaviour
+public class ChampionMovement : MonoBehaviour
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
@@ -89,11 +89,6 @@ public class ChampionBehaviour : MonoBehaviour
 
         #endregion
 
-        #region CHAMPION MOVEMENT RECORDING
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            championActionsThisFrame.moveDir = moveInput;
-        }
-        #endregion
     }
 
     private void FixedUpdate() {
@@ -195,21 +190,13 @@ public class ChampionBehaviour : MonoBehaviour
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
         if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpPressed();
-            championActionsThisFrame.JumpPressed = true;
-            championActionsThisFrame.JumpReleased = false;
         }
     }
 
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
         if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpReleased();
-            championActionsThisFrame.JumpReleased = true;
-            championActionsThisFrame.JumpPressed = false;
         }
-    }
-
-    public ChampionActions GetChampionActionsThisFrame() {
-        return championActionsThisFrame;
     }
 
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
