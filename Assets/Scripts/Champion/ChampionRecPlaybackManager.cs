@@ -41,7 +41,7 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
             championActions = championBehaviour.GetChampionActionsThisFrame();
 
             championActionsRecord[recordingLoopIndex] = new ChampionActions {
-                Attack = championActions.Attack,
+                AttackPressed = championActions.AttackPressed,
                 moveDir = championActions.moveDir,
                 JumpPressed = championActions.JumpPressed,
                 JumpReleased = championActions.JumpReleased,
