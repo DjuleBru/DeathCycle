@@ -32,7 +32,7 @@ public class ObjectPool : MonoBehaviour {
         pool = new GameObject[poolSize];
 
         for (int i = 0; i < poolSize; i++) {
-            pool[i] = Instantiate(champion);
+            pool[i] = Instantiate(champion, transform.position, Quaternion.identity);
             pool[i].SetActive(false);
         }
     }

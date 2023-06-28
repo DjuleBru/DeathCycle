@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Projectile
   layers:
   - Default
   - TransparentFX
@@ -40,4 +41,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Body
+    uniqueID: 3571699257
+    locked: 0
+  - name: Weapon
+    uniqueID: 3633529799
+    locked: 0
+  - name: Hands
+    uniqueID: 3487783655
     locked: 0
