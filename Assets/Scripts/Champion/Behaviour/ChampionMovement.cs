@@ -54,24 +54,6 @@ public class ChampionMovement : MonoBehaviour
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
 
-    private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
-        rb.velocity = Vector3.zero;
-        if (e.state == LoopManager.State.Pause) {
-            loopOnPause = true;
-            loopOnRecording = false;
-            loopOnPlaybacking = false;
-        }
-        if (e.state == LoopManager.State.Recording) {
-            loopOnPause = false;
-            loopOnRecording = true;
-            loopOnPlaybacking = false;
-        }
-        if (e.state == LoopManager.State.Playbacking) {
-            loopOnPause = false;
-            loopOnRecording = false;
-            loopOnPlaybacking = true;
-        }
-    }
 
     void Update()
     {
@@ -81,7 +63,7 @@ public class ChampionMovement : MonoBehaviour
         #endregion
 
         #region INPUTHANDLER
-        if (LoopManager.Instance.IsRecording) {
+        if (loopOnRecording) {
             moveInput = inputManager.GetMoveInput();
         }
         #endregion
@@ -213,6 +195,25 @@ public class ChampionMovement : MonoBehaviour
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
         if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpReleased();
+        }
+    }
+
+    private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
+        rb.velocity = Vector3.zero;
+        if (e.state == LoopManager.State.Pause) {
+            loopOnPause = true;
+            loopOnRecording = false;
+            loopOnPlaybacking = false;
+        }
+        if (e.state == LoopManager.State.Recording) {
+            loopOnPause = false;
+            loopOnRecording = true;
+            loopOnPlaybacking = false;
+        }
+        if (e.state == LoopManager.State.Playbacking) {
+            loopOnPause = false;
+            loopOnRecording = false;
+            loopOnPlaybacking = true;
         }
     }
 

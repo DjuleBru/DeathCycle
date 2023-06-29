@@ -11,6 +11,7 @@ public class ChampionProjectileAttack : MonoBehaviour
     private ChampionSO championSO;
 
     [SerializeField] private Projectile projectile;
+    private BoxCollider2D projectileCollider;
 
     private float championAttackDamage;
 
@@ -19,6 +20,7 @@ public class ChampionProjectileAttack : MonoBehaviour
         champion = GetComponent<Champion>();
         championAim = champion.GetComponent<ChampionAim>();
         championSO = champion.ChampionSO;
+        projectileCollider = projectile.GetComponent<BoxCollider2D>();
     }
 
     private void Start() {
@@ -29,11 +31,10 @@ public class ChampionProjectileAttack : MonoBehaviour
     private void ChampionAim_OnShoot(object sender, ChampionAim.OnShootEventArgs e) {
 
             Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
+
             Vector3 attackDir = e.attackDir;
 
             Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
-
             bulletTransform.GetComponent<Projectile>().Setup(attackDir, championAttackDamage);
-
     }
 }

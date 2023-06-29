@@ -22,16 +22,14 @@ public class LoopManager : MonoBehaviour {
 
     private State state;
 
-    private float loopPauseTime = 3f;
-    private float loopTime = 5f;
+    private float loopPauseTime = 1f;
+    private float loopTime = 3f;
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
     private float loopPauseTimer = 0f;
 
     private int loopNumber = 0;
-    private bool isRecording;
 
-    public bool IsRecording { get { return isRecording; } }
     public int LoopNumber { get { return loopNumber; } }
     public float LoopPauseTime { get { return loopPauseTime; } }
     public float LoopTime { get { return loopTime; } }
@@ -48,8 +46,6 @@ public class LoopManager : MonoBehaviour {
     }
 
     private void Update() {
-
-        isRecording = state == State.Recording;
 
         switch (state) {
             case State.Pause:

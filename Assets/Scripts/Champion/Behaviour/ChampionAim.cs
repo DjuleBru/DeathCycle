@@ -23,6 +23,10 @@ public class ChampionAim : MonoBehaviour
         public Vector3 attackDir;
     }
 
+    private bool loopOnPause;
+    private bool loopOnRecording;
+    private bool loopOnPlaybacking;
+
     private void Awake() {
         champion = GetComponent<Champion>();
         aimTransform = transform.Find("Aim");
@@ -30,6 +34,7 @@ public class ChampionAim : MonoBehaviour
         championSO = champion.ChampionSO;
 
         inputManager.OnAttackPressed += InputManager_OnAttackPressed;
+        LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
 
     private void Start() {
@@ -39,7 +44,7 @@ public class ChampionAim : MonoBehaviour
     private void Update() {
         championAttackTimer += Time.deltaTime;
 
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
             Vector3 aimDir = (mousePosition - transform.position).normalized;
 
@@ -48,7 +53,7 @@ public class ChampionAim : MonoBehaviour
         }
 
         #region AIM PLAYBACK
-        if (!LoopManager.Instance.IsRecording || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
+        if (loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
             // Loop is not recording OR not champion's active loop
 
             Vector3 mousePosition = championActionsThisFrame.mousePos;
@@ -66,7 +71,8 @@ public class ChampionAim : MonoBehaviour
 
                     
                     OnShoot?.Invoke(this, new OnShootEventArgs {
-                        weaponEndPointPosition = weaponEndPointPosition.position,
+                        // Adding attackDir.normalized because instantiate on Update instead of on Event creates bug
+                        weaponEndPointPosition = weaponEndPointPosition.position + attackDir.normalized,
                         attackDir = attackDir
                     });
                     championAttackTimer = 0f;
@@ -77,7 +83,7 @@ public class ChampionAim : MonoBehaviour
     }
 
     private void InputManager_OnAttackPressed(object sender, EventArgs e) {
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             if (championAttackTimer >= championAttackMaxRate) {
 
                 Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
@@ -105,6 +111,24 @@ public class ChampionAim : MonoBehaviour
             aimLocalScale.y = +1f;
         }
         aimTransform.localScale = aimLocalScale;
+    }
+
+    private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
+        if (e.state == LoopManager.State.Pause) {
+            loopOnPause = true;
+            loopOnRecording = false;
+            loopOnPlaybacking = false;
+        }
+        if (e.state == LoopManager.State.Recording) {
+            loopOnPause = false;
+            loopOnRecording = true;
+            loopOnPlaybacking = false;
+        }
+        if (e.state == LoopManager.State.Playbacking) {
+            loopOnPause = false;
+            loopOnRecording = false;
+            loopOnPlaybacking = true;
+        }
     }
 
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
