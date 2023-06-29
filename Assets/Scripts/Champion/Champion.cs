@@ -28,8 +28,6 @@ public class Champion : MonoBehaviour
             float incomingDamage = incomingProjectile.ProjectileDamage;
 
             ChampionHealth -= incomingDamage;
-
-            Debug.Log(ChampionHealth);
         };
     }
 }

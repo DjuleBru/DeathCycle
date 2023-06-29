@@ -75,7 +75,6 @@ public class ChampionMovement : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(loopOnPause);
         #region TIMERS
         lastGroundedTime -= Time.deltaTime;
         lastPressedJumpTime -= Time.deltaTime;
@@ -127,7 +126,6 @@ public class ChampionMovement : MonoBehaviour
         }
         if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause) {
             HandleMovement(championActionsThisFrame.moveDir);
-            Debug.Log("Moving");
         }
             #endregion
 
