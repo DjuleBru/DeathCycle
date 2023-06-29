@@ -27,6 +27,7 @@ public class ChampionSO : ScriptableObject
     #region CHAMPION HEALTH:DAMAGE PARAMETERS
     public float championMaxHealth;
     public float championAttackDamage;
+    public float championAttackMaxRate;
     public float championSpecialDamage;
     #endregion
 

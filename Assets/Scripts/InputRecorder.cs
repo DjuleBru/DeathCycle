@@ -7,11 +7,14 @@ public class InputRecorder : MonoBehaviour
     private InputManager inputManager;
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
+    private bool jumpPressed;
+    private bool jumpReleased;
+    private bool attackPressed;
+    private bool attackReleased;
 
     private void Awake() {
         inputManager = FindObjectOfType<InputManager>();
-    }
-    private void Start() {
+
         inputManager.OnJumpPressed += InputManager_OnJumpPressed;
         inputManager.OnJumpReleased += InputManager_OnJumpReleased;
         inputManager.OnAttackPressed += InputManager_OnAttackPressed;
@@ -19,30 +22,55 @@ public class InputRecorder : MonoBehaviour
     }
 
 
-    private void FixedUpdate() {
+    private void Update() {
+
         championActionsThisFrame.moveDir = inputManager.GetMoveInput();
         championActionsThisFrame.mousePos = inputManager.GetMousePositionWorldSpace();
+
+        if (jumpPressed) {
+            championActionsThisFrame.JumpPressed = true;
+            jumpPressed = false;
+        } else {
+            championActionsThisFrame.JumpPressed = false;
+        }
+
+        if (jumpReleased) {
+            championActionsThisFrame.JumpReleased = true;
+            jumpReleased = false;
+        } else {
+            championActionsThisFrame.JumpReleased = false;
+        }
+
+        if (attackPressed) {
+            championActionsThisFrame.AttackPressed = true;
+            attackPressed = false;
+        } else {
+            championActionsThisFrame.AttackPressed = false;
+        }
+
+        if (attackReleased) {
+            championActionsThisFrame.AttackReleased = true;
+            attackReleased = false;
+        } else {
+            championActionsThisFrame.AttackReleased = false;
+        }
 
     }
 
     private void InputManager_OnAttackReleased(object sender, System.EventArgs e) {
-            championActionsThisFrame.AttackPressed = false;
-            championActionsThisFrame.AttackReleased = true;
+        attackReleased = true;
     }
 
     private void InputManager_OnAttackPressed(object sender, System.EventArgs e) {
-            championActionsThisFrame.AttackPressed = true;
-            championActionsThisFrame.AttackReleased = false;
+        attackPressed = true;
     }
 
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
-        championActionsThisFrame.JumpReleased = true;
-        championActionsThisFrame.JumpPressed = false;
+        jumpReleased = true;
     }
 
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
-            championActionsThisFrame.JumpPressed = true;
-            championActionsThisFrame.JumpReleased = false;
+        jumpPressed = true;
     }
 
     public ChampionActions GetChampionActionsThisFrame() {

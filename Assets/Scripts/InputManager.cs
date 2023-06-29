@@ -18,10 +18,9 @@ public class InputManager : MonoBehaviour
         inputSystem = new InputSystem();
 
         inputSystem.Player.Enable();
-
-        inputSystem.Player.Jump.performed += Jump_performed;
+        inputSystem.Player.Jump.started+= Jump_performed;
         inputSystem.Player.Jump.canceled += Jump_released;
-        inputSystem.Player.Attack.performed += Attack_performed;
+        inputSystem.Player.Attack.started += Attack_performed;
         inputSystem.Player.Attack.canceled += Attack_canceled;
     }
 

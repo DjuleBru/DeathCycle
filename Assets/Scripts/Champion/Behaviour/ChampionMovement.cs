@@ -30,15 +30,17 @@ public class ChampionMovement : MonoBehaviour
 
     #region TIMERS
     private float lastGroundedTime;
-    private float lastPressedJumpTime;
+    private float lastPressedJumpTime = 0f;
     #endregion
 
     #region BOOL CHECKERS
     private bool isGrounded;
     private bool isJumping;
-    private bool isJumpFalling;
-    private bool jumpInputReleased;
     private bool isJumpCut;
+
+    private bool loopOnPause;
+    private bool loopOnRecording;
+    private bool loopOnPlaybacking;
     #endregion
 
     private void Awake() {
@@ -46,16 +48,34 @@ public class ChampionMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         champion = GetComponent<Champion>();
         championSO = champion.ChampionSO;
-    }
 
-    void Start()
-    {
         inputManager.OnJumpPressed += InputManager_OnJumpPressed;
         inputManager.OnJumpReleased += InputManager_OnJumpReleased;
+        LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
+    }
+
+    private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
+        rb.velocity = Vector3.zero;
+        if (e.state == LoopManager.State.Pause) {
+            loopOnPause = true;
+            loopOnRecording = false;
+            loopOnPlaybacking = false;
+        }
+        if (e.state == LoopManager.State.Recording) {
+            loopOnPause = false;
+            loopOnRecording = true;
+            loopOnPlaybacking = false;
+        }
+        if (e.state == LoopManager.State.Playbacking) {
+            loopOnPause = false;
+            loopOnRecording = false;
+            loopOnPlaybacking = true;
+        }
     }
 
     void Update()
     {
+        Debug.Log(loopOnPause);
         #region TIMERS
         lastGroundedTime -= Time.deltaTime;
         lastPressedJumpTime -= Time.deltaTime;
@@ -79,23 +99,16 @@ public class ChampionMovement : MonoBehaviour
         #region JUMP CHECKS
         if (isJumping && rb.velocity.y < 0f) {
             isJumping = false;
-            isJumpFalling = true;
         }
 
         if (lastGroundedTime > 0 && !isJumping) {
             isJumpCut = false;
-            isJumpFalling = false;
         }
 
         #endregion
 
-    }
-
-    private void FixedUpdate() {
-
-        #region CHAMPION ACTIONS PLAYBACK
-        if (!LoopManager.Instance.IsRecording || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
-            HandleMovement(championActionsThisFrame.moveDir);
+        #region CHAMPION JUMP INPUT PLAYBACK
+        if (loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
             if (championActionsThisFrame.JumpPressed) {
                 JumpPressed();
             }
@@ -103,14 +116,20 @@ public class ChampionMovement : MonoBehaviour
                 JumpReleased();
             }
         }
-
         #endregion
+    }
+
+    private void FixedUpdate() {
 
         #region MOVEMENT
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             HandleMovement(moveInput);
         }
-        #endregion
+        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause) {
+            HandleMovement(championActionsThisFrame.moveDir);
+            Debug.Log("Moving");
+        }
+            #endregion
 
         #region JUMP
 
@@ -188,13 +207,13 @@ public class ChampionMovement : MonoBehaviour
     }
 
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpPressed();
         }
     }
 
     private void InputManager_OnJumpReleased(object sender, System.EventArgs e) {
-        if (LoopManager.Instance.IsRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             JumpReleased();
         }
     }
@@ -202,5 +221,4 @@ public class ChampionMovement : MonoBehaviour
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
         championActionsThisFrame = championActions;
     }
-
 }

@@ -12,7 +12,8 @@ public class ChampionActions
     public bool JumpReleased;
     public bool AttackPressed;
     public bool AttackReleased;
-    public bool Special;
+    public bool SpecialPressed;
+    public bool SpecialReleased;
 
     public ChampionActions() { 
 

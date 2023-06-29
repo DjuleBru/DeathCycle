@@ -15,26 +15,27 @@ public class ObjectPool : MonoBehaviour {
     }
 
     private void Start() {
-        LoopManager.Instance.OnPlaybackStarted += LoopManager_OnPlaybackStarted;
-        LoopManager.Instance.OnRecordingStarted += LoopManager_OnRecordingStarted;
+        LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
 
-    private void LoopManager_OnRecordingStarted(object sender, LoopManager.OnRecordingEventArgs e) {
-        pool[e.loopNumber].SetActive(true);
-        pool[e.loopNumber].GetComponent<Champion>().SetSpawnedLoopNumber(e.loopNumber);
-
-        // Reset champion positions to spawn points
-        for (int i = 0; i < poolSize; i++) {
-            pool[i].transform.position = spawnPoints[i].transform.position;
+    private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
+        if (e.state == LoopManager.State.Pause) {
+            // Reset champion positions to spawn points
+            for (int i = 0; i < poolSize; i++) {
+                pool[i].transform.position = spawnPoints[i].transform.position;
+            }
+        }
+        if (e.state == LoopManager.State.Recording) {
+            pool[e.loopNumber].SetActive(true);
+            pool[e.loopNumber].GetComponent<Champion>().SetSpawnedLoopNumber(e.loopNumber);
+        }
+        if (e.state == LoopManager.State.Playbacking) {
+            // Reset champion positions to spawn points
+            for (int i = 0; i < poolSize; i++) {
+                pool[i].transform.position = spawnPoints[i].transform.position;
+            }
         }
     }
-
-    private void LoopManager_OnPlaybackStarted(object sender, LoopManager.OnRecordingEventArgs e) {
-        // Reset champion positions to spawn points
-        for (int i = 0; i < poolSize; i++) {
-            pool[i].transform.position = spawnPoints[i].transform.position;
-        }
-        }
 
     private void PopulatePool() {
         pool = new GameObject[poolSize];

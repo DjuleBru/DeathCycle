@@ -14,6 +14,7 @@ public class ChampionProjectileAttack : MonoBehaviour
 
     private float championAttackDamage;
 
+
     private void Awake() {
         champion = GetComponent<Champion>();
         championAim = champion.GetComponent<ChampionAim>();
@@ -26,12 +27,13 @@ public class ChampionProjectileAttack : MonoBehaviour
     }
 
     private void ChampionAim_OnShoot(object sender, ChampionAim.OnShootEventArgs e) {
+
             Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
             Vector3 attackDir = e.attackDir;
 
             Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
 
             bulletTransform.GetComponent<Projectile>().Setup(attackDir, championAttackDamage);
-    }
 
+    }
 }

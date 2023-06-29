@@ -7,7 +7,7 @@ public class Projectile : MonoBehaviour
 {
     private Vector3 shootDir;
     private float projectileLifeTime = 2f;
-    private float projectileSpeed = 100f;
+    private float projectileSpeed = 75f;
     private float projectileDamage;
 
     public float ProjectileDamage { get { return projectileDamage; } }
@@ -33,6 +33,5 @@ public class Projectile : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         // Projectile hit something
         projectileHit = true;
-        Debug.Log("Collision");
     }
 }

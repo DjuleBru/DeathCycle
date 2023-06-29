@@ -13,67 +13,93 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
     private ChampionActions championActions;
     private Champion champion;
 
+    public enum State {
+        Pause,
+        Recording,
+        Playbacking,
+    }
+
+    private State loopManagerState;
+
     private int recordingLoopIndex = 0;
     private int playbackLoopIndex = 0;
+
+    private float loopTimer = 0f;
 
     private void Awake() {
         inputRecorder = FindObjectOfType<InputRecorder>();
         championMovement = GetComponent<ChampionMovement>();
         championAim = GetComponent<ChampionAim>();
         champion = GetComponent<Champion>();
+
+        LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
 
-    public void Start() {
-        LoopManager.Instance.OnRecordingStarted += LoopManager_OnRecordingStarted;
-        LoopManager.Instance.OnPlaybackStarted += LoopManager_OnPlaybackStarted;
+    private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
+        if (e.state == LoopManager.State.Pause) {
+            loopManagerState = State.Pause;
+        }
+        if (e.state == LoopManager.State.Recording) {
+            loopManagerState = State.Recording;
+            playbackLoopIndex = 0;
+            loopTimer = 0f;
+        }
+        if (e.state == LoopManager.State.Playbacking) {
+            loopManagerState = State.Playbacking;
+            playbackLoopIndex = 0;
+            loopTimer = 0f;
+        }
     }
 
+    private void Update() {
+        loopTimer += Time.deltaTime;
 
-    private void FixedUpdate() {
-        if (!LoopManager.Instance.IsRecording) {
+        if (loopManagerState == State.Recording && champion.SpawnedLoopNumber == LoopManager.Instance.LoopNumber) {
+            Recording();
+        }
+
+        if (loopManagerState == State.Playbacking || (loopManagerState == State.Recording && champion.SpawnedLoopNumber != LoopManager.Instance.LoopNumber)) {
             // Loop is playbacking
             PlayBack();
-        } else { 
-            // Loop is recording
-            if (champion.SpawnedLoopNumber == LoopManager.Instance.LoopNumber) {
-                // Loop Number set on Spawn = Active loop number
-                Recording();
-            } else {
-                PlayBack();
-            }
-        } 
+        }
     }
 
     void Recording() {
             championActions = inputRecorder.GetChampionActionsThisFrame();
 
             championActionsRecord[recordingLoopIndex] = new ChampionActions {
+                actionTimeInLoop = loopTimer,
                 AttackPressed = championActions.AttackPressed,
                 AttackReleased = championActions.AttackReleased,
                 mousePos = championActions.mousePos,
                 moveDir = championActions.moveDir,
                 JumpPressed = championActions.JumpPressed,
                 JumpReleased = championActions.JumpReleased,
-                Special = championActions.Special,
+                SpecialPressed = championActions.SpecialPressed,
+                SpecialReleased = championActions.SpecialReleased,
             };
-            recordingLoopIndex++;
+        
+        recordingLoopIndex++;
+
     }
 
     void PlayBack() {
         if (playbackLoopIndex < championActionsRecord.Count) {
 
+
             championActions = championActionsRecord[playbackLoopIndex];
+
+            while (championActions.actionTimeInLoop <=  loopTimer) {
+                playbackLoopIndex++;
+
+                if (playbackLoopIndex < championActionsRecord.Count) {
+                    championActions = championActionsRecord[playbackLoopIndex];
+                } else { return; }
+            }
+
             championMovement.SetChampionActionsThisFrame(championActions);
             championAim.SetChampionActionsThisFrame(championActions);
 
-            playbackLoopIndex++;
         }
-    }
-    private void LoopManager_OnRecordingStarted(object sender, LoopManager.OnRecordingEventArgs e) {
-        playbackLoopIndex = 0;
-    }
-
-    private void LoopManager_OnPlaybackStarted(object sender, LoopManager.OnRecordingEventArgs e) {
-        playbackLoopIndex = 0;
     }
 }

@@ -2,26 +2,39 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class LoopManager : MonoBehaviour {
     public static LoopManager Instance { get; private set; }
 
-    public event EventHandler<OnRecordingEventArgs> OnRecordingStarted;
-    public event EventHandler<OnRecordingEventArgs> OnPlaybackStarted;
+    public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
 
-    public class OnRecordingEventArgs : EventArgs{
+    public class OnStateChangedEventArgs : EventArgs {
+        public State state;
         public int loopNumber;
-    };
+    }
 
-    private float loopTime = 3f;
+    public enum State {
+        Pause,
+        Recording,
+        Playbacking,
+    }
+
+    private State state;
+
+    private float loopPauseTime = 3f;
+    private float loopTime = 5f;
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
+    private float loopPauseTimer = 0f;
 
     private int loopNumber = 0;
     private bool isRecording;
 
     public bool IsRecording { get { return isRecording; } }
     public int LoopNumber { get { return loopNumber; } }
+    public float LoopPauseTime { get { return loopPauseTime; } }
+    public float LoopTime { get { return loopTime; } }
 
     private void Awake() {
         if (Instance != null) {
@@ -30,35 +43,58 @@ public class LoopManager : MonoBehaviour {
         Instance = this;
     }
 
-    void FixedUpdate() {
-        // 1: recording
-        if (loopRecordingTimer == 0) {
-            OnRecordingStarted?.Invoke(this, new OnRecordingEventArgs {
-                loopNumber = loopNumber
-            });
-        }
-        if (loopRecordingTimer <= loopTime) {
-            isRecording = true;
-            loopRecordingTimer += Time.deltaTime;
-        }
-        // 2: recording end
-        else {
-            if (loopPlaybackTimer == 0) {
-                OnPlaybackStarted?.Invoke(this, new OnRecordingEventArgs {
-                    loopNumber = loopNumber
-                });
-            }
+    private void Start() {
+        state = State.Pause;
+    }
 
-            // 3: playback 
-            if (loopPlaybackTimer <= loopTime) {
-                loopPlaybackTimer += Time.deltaTime;
-                isRecording = false;
-            } else {
-                // 4: playback end
-                loopRecordingTimer = 0;
-                loopPlaybackTimer = 0;
-                loopNumber++;
-            }
+    private void Update() {
+
+        isRecording = state == State.Recording;
+
+        switch (state) {
+            case State.Pause:
+
+                if (loopPauseTimer <= loopPauseTime) {
+                    loopPauseTimer += Time.deltaTime;
+                } else {
+                    state = State.Recording;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopRecordingTimer = 0f;
+                }
+
+                break;
+            case State.Recording:
+
+                if (loopRecordingTimer <= loopTime) {
+                    loopRecordingTimer += Time.deltaTime;
+                } else {
+                    state = State.Playbacking;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopPlaybackTimer = 0f;
+                }
+
+                break;
+            case State.Playbacking:
+
+                if (loopPlaybackTimer <= loopTime) {
+                    loopPlaybackTimer += Time.deltaTime;
+                } else {
+                    state = State.Pause;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+
+                    loopPauseTimer = 0f;
+                    loopNumber++;
+                }
+                break;
         }
     }
 }
