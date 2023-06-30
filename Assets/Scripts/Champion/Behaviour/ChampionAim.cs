@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class ChampionAim : MonoBehaviour
 {
-
     [SerializeField] private Transform weaponEndPointPosition;
+
     private ChampionActions championActionsThisFrame = new ChampionActions();
     private Champion champion;
     private ChampionSO championSO;
@@ -29,7 +29,7 @@ public class ChampionAim : MonoBehaviour
 
     private void Awake() {
         champion = GetComponent<Champion>();
-        aimTransform = transform.Find("Aim");
+        aimTransform = transform.Find("Weapon");
         inputManager = FindObjectOfType<InputManager>();
         championSO = champion.ChampionSO;
 
@@ -101,16 +101,20 @@ public class ChampionAim : MonoBehaviour
 
     private void HandleAim(Vector3 aimDir) {
 
-        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-        aimTransform.eulerAngles = new Vector3(0, 0, angle);
+        if (championAttackTimer >= championAttackMaxRate) {
+            // Champion is not attacking
 
-        Vector3 aimLocalScale = Vector3.one;
-        if (angle > 90 || angle < -90) {
-            aimLocalScale.y = -1f;
-        } else {
-            aimLocalScale.y = +1f;
+            float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
+            aimTransform.eulerAngles = new Vector3(0, 0, angle);
+
+            Vector3 aimLocalScale = Vector3.one;
+            if (angle > 90 || angle < -90) {
+                aimLocalScale.y = -1f;
+            } else {
+                aimLocalScale.y = +1f;
+            }
+            aimTransform.localScale = aimLocalScale;
         }
-        aimTransform.localScale = aimLocalScale;
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
@@ -130,6 +134,7 @@ public class ChampionAim : MonoBehaviour
             loopOnPlaybacking = true;
         }
     }
+
 
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
         this.championActionsThisFrame = championActions;

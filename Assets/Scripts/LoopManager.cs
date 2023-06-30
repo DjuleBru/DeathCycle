@@ -23,7 +23,7 @@ public class LoopManager : MonoBehaviour {
     private State state;
 
     private float loopPauseTime = 1f;
-    private float loopTime = 3f;
+    private float loopTime = 5f;
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
     private float loopPauseTimer = 0f;

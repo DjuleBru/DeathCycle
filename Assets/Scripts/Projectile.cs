@@ -32,6 +32,9 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider) {
         // Projectile hit something
+        if (collider.tag == "Champion") {
+            collider.gameObject.GetComponent<KnockbackFeedback>().ProjectileKnockback(shootDir);
+        }
         projectileHit = true;
     }
 }

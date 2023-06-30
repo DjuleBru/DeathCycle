@@ -20,20 +20,14 @@ public class ObjectPool : MonoBehaviour {
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
         if (e.state == LoopManager.State.Pause) {
-            // Reset champion positions to spawn points
-            for (int i = 0; i < poolSize; i++) {
-                pool[i].transform.position = spawnPoints[i].transform.position;
-            }
+            ResetPool();
         }
         if (e.state == LoopManager.State.Recording) {
             pool[e.loopNumber].SetActive(true);
             pool[e.loopNumber].GetComponent<Champion>().SetSpawnedLoopNumber(e.loopNumber);
         }
         if (e.state == LoopManager.State.Playbacking) {
-            // Reset champion positions to spawn points
-            for (int i = 0; i < poolSize; i++) {
-                pool[i].transform.position = spawnPoints[i].transform.position;
-            }
+            ResetPool();
         }
     }
 
@@ -43,6 +37,18 @@ public class ObjectPool : MonoBehaviour {
         for (int i = 0; i < poolSize; i++) {
             pool[i] = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity);
             pool[i].SetActive(false);
+        }
+    }
+
+    private void ResetPool() {
+        // Reset champion positions to spawn points, activate all components, reset health
+        for (int i = 0; i < poolSize; i++) {
+            pool[i].transform.position = spawnPoints[i].transform.position;
+            pool[i].GetComponent<ChampionAim>().enabled = true;
+            pool[i].GetComponent<ChampionMovement>().enabled = true;
+            pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
+            pool[i].GetComponent<Collider2D>().enabled = true;
+            pool[i].GetComponent<Champion>().ResetChampionHealth();
         }
     }
 }
