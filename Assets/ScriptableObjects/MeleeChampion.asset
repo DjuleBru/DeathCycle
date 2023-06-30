@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c249de9f0f408454892751c84da20275, type: 3}
   m_Name: MeleeChampion
   m_EditorClassIdentifier: 
-  Champion: {fileID: 950238747665873915, guid: 945f5752750d9b44bad89e64d93bf7ee, type: 3}
+  Champion: {fileID: 950238747665873915, guid: c2fc9e60ba579db4ea842ca59e86ec10, type: 3}
   moveSpeed: 10
   velPower: 0.9
   acceleration: 7
@@ -27,5 +27,5 @@ MonoBehaviour:
   maxFallSpeed: 20
   championMaxHealth: 10
   championAttackDamage: 5
-  championAttackMaxRate: 0.2
+  championAttackMaxRate: 0.5
   championSpecialDamage: 0

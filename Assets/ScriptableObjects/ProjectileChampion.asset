@@ -26,6 +26,6 @@ MonoBehaviour:
   jumpCutGravityMult: 2
   maxFallSpeed: 20
   championMaxHealth: 10
-  championAttackDamage: 5
+  championAttackDamage: 2
   championAttackMaxRate: 0.2
   championSpecialDamage: 0
