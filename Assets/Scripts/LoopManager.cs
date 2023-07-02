@@ -5,6 +5,7 @@ using UnityEngine;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class LoopManager : MonoBehaviour {
+
     public static LoopManager Instance { get; private set; }
 
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
@@ -93,4 +94,5 @@ public class LoopManager : MonoBehaviour {
                 break;
         }
     }
+
 }
