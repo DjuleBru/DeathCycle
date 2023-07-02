@@ -14,6 +14,7 @@ public class ChampionMovement : MonoBehaviour
     private InputManager inputManager;
     private float moveInput;
 
+    private ChampionRecPlaybackManager loopManager;
     private ChampionSO championSO;
     private Champion champion;
     private Rigidbody2D rb;
@@ -43,34 +44,15 @@ public class ChampionMovement : MonoBehaviour
     private bool loopOnPlaybacking;
     #endregion
 
-<<<<<<< HEAD:Assets/Scripts/Champion/Behaviour/ChampionMovement.cs
-    private void Awake() {
-        inputManager = FindObjectOfType<InputManager>();
-=======
-<<<<<<< Updated upstream:Assets/Scripts/ChampionBehaviour.cs
-    private float moveInput;
-=======
     #region ANIMATOR PARAMETERS
     private float moveDir;
     public float MoveDir { get { return moveDir; } }
 
     #endregion
 
+
     private void Awake() {
         inputManager = FindObjectOfType<InputManager>();
-        rb = GetComponent<Rigidbody2D>();
-        champion = GetComponent<Champion>();
-        championSO = champion.ChampionSO;
->>>>>>> Stashed changes:Assets/Scripts/Champion/Behaviour/ChampionMovement.cs
-
-    private ChampionRecPlaybackManager loopManager;
-    [SerializeField] private InputManager inputManager;
-    [SerializeField] private ChampionActions championActionsThisFrame = new ChampionActions();
-    private Rigidbody2D rb;
-
-    void Start()
-    {
->>>>>>> parent of e2851f3 (Revert "Initial commit"):Assets/Scripts/ChampionBehaviour.cs
         rb = GetComponent<Rigidbody2D>();
         champion = GetComponent<Champion>();
         championSO = champion.ChampionSO;
@@ -80,9 +62,7 @@ public class ChampionMovement : MonoBehaviour
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
 
-
-    void Update()
-    {
+    void Update() {
         #region TIMERS
         lastGroundedTime -= Time.deltaTime;
         lastPressedJumpTime -= Time.deltaTime;
@@ -114,59 +94,8 @@ public class ChampionMovement : MonoBehaviour
 
         #endregion
 
-<<<<<<< HEAD:Assets/Scripts/Champion/Behaviour/ChampionMovement.cs
         #region CHAMPION JUMP INPUT PLAYBACK
         if (loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
-=======
-        #region CHAMPION ACTIONS RECORDING
-        if (LoopManager.Instance.IsRecording) {
-            championActionsThisFrame.moveDir = moveInput;
-        }
-        #endregion
-    }
-
-    private void FixedUpdate() {
-<<<<<<< Updated upstream:Assets/Scripts/ChampionBehaviour.cs
-        HandleMovement(moveInput);
-=======
-
-        #region MOVEMENT
-        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            HandleMovement(moveInput);
-            moveDir = moveInput;
-        }
-        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause) {
-            HandleMovement(championActionsThisFrame.moveDir);
-            moveDir = championActionsThisFrame.moveDir;
-        }
-            #endregion
->>>>>>> Stashed changes:Assets/Scripts/Champion/Behaviour/ChampionMovement.cs
-
-        #region JUMP
-
-        if(lastGroundedTime > 0 && lastPressedJumpTime > 0 && !isJumping) {
-            Jump();
-        }
-
-        #endregion
-
-        #region GRAVITY
-        
-
-        // Higher gravity if jump button released and speed reduction
-        if (isJumpCut) {
-            SetGravityScale(gravityScale * jumpCutGravityMult);
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
-        } else {
-            // Default gravity if grounded
-            SetGravityScale(gravityScale);
-        }
-        #endregion
-
-        #region CHAMPION ACTIONS PLAYBACK
-        if (!LoopManager.Instance.IsRecording) {
-            HandleMovement(championActionsThisFrame.moveDir);
->>>>>>> parent of e2851f3 (Revert "Initial commit"):Assets/Scripts/ChampionBehaviour.cs
             if (championActionsThisFrame.JumpPressed) {
                 JumpPressed();
             }
@@ -181,10 +110,12 @@ public class ChampionMovement : MonoBehaviour
 
         #region MOVEMENT
         if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            HandleMovement(moveInput);
+            moveDir = moveInput;
+            HandleMovement(moveDir);
         }
         if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause) {
-            HandleMovement(championActionsThisFrame.moveDir);
+            moveDir = championActionsThisFrame.moveDir;
+            HandleMovement(moveDir);
         }
             #endregion
 
@@ -277,6 +208,8 @@ public class ChampionMovement : MonoBehaviour
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
         rb.velocity = Vector3.zero;
+
+        Debug.Log(e.state.ToString());
         if (e.state == LoopManager.State.Pause) {
             loopOnPause = true;
             loopOnRecording = false;
@@ -298,3 +231,4 @@ public class ChampionMovement : MonoBehaviour
         championActionsThisFrame = championActions;
     }
 }
+

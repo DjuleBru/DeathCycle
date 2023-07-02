@@ -8,12 +8,6 @@ public class LoopManager : MonoBehaviour {
 
     public static LoopManager Instance { get; private set; }
 
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-    private float loopTime = 2f;
-=======
->>>>>>> parent of e2851f3 (Revert "Initial commit")
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
 
     public class OnStateChangedEventArgs : EventArgs {
@@ -29,14 +23,8 @@ public class LoopManager : MonoBehaviour {
 
     private State state;
 
-<<<<<<< HEAD
-    private float loopPauseTime = 1f;
-    private float loopTime = 5f;
-=======
-    [SerializeField] private float loopPauseTime = 3f;
-    [SerializeField] private float loopTime = 20f;
->>>>>>> Stashed changes
->>>>>>> parent of e2851f3 (Revert "Initial commit")
+    [SerializeField] private float loopPauseTime = 0.1f;
+    [SerializeField] private float loopTime = 200f;
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
     private float loopPauseTimer = 0f;
