@@ -71,6 +71,7 @@ public class InputRecorder : MonoBehaviour
 
     private void InputManager_OnJumpPressed(object sender, System.EventArgs e) {
         jumpPressed = true;
+        Debug.Log("cac;");
     }
 
     public ChampionActions GetChampionActionsThisFrame() {
