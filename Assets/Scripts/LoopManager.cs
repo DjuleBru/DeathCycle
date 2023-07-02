@@ -109,7 +109,27 @@ public class LoopManager : MonoBehaviour {
 =======
     public static LoopManager Instance { get; private set; }
 
+<<<<<<< Updated upstream
     private float loopTime = 2f;
+=======
+    public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
+
+    public class OnStateChangedEventArgs : EventArgs {
+        public State state;
+        public int loopNumber;
+    }
+
+    public enum State {
+        Pause,
+        Recording,
+        Playbacking,
+    }
+
+    private State state;
+
+    [SerializeField] private float loopPauseTime = 3f;
+    [SerializeField] private float loopTime = 20f;
+>>>>>>> Stashed changes
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
 

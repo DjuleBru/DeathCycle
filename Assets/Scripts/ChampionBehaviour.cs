@@ -48,7 +48,21 @@ public class ChampionBehaviour : MonoBehaviour
     private bool isJumpCut;
     #endregion
 
+<<<<<<< Updated upstream:Assets/Scripts/ChampionBehaviour.cs
     private float moveInput;
+=======
+    #region ANIMATOR PARAMETERS
+    private float moveDir;
+    public float MoveDir { get { return moveDir; } }
+
+    #endregion
+
+    private void Awake() {
+        inputManager = FindObjectOfType<InputManager>();
+        rb = GetComponent<Rigidbody2D>();
+        champion = GetComponent<Champion>();
+        championSO = champion.ChampionSO;
+>>>>>>> Stashed changes:Assets/Scripts/Champion/Behaviour/ChampionMovement.cs
 
     private ChampionRecPlaybackManager loopManager;
     [SerializeField] private InputManager inputManager;
@@ -104,7 +118,21 @@ public class ChampionBehaviour : MonoBehaviour
     }
 
     private void FixedUpdate() {
+<<<<<<< Updated upstream:Assets/Scripts/ChampionBehaviour.cs
         HandleMovement(moveInput);
+=======
+
+        #region MOVEMENT
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+            HandleMovement(moveInput);
+            moveDir = moveInput;
+        }
+        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause) {
+            HandleMovement(championActionsThisFrame.moveDir);
+            moveDir = championActionsThisFrame.moveDir;
+        }
+            #endregion
+>>>>>>> Stashed changes:Assets/Scripts/Champion/Behaviour/ChampionMovement.cs
 
         #region JUMP
 
