@@ -10,12 +10,18 @@ public class ObjectPool : MonoBehaviour {
 
     private int poolSize = 5;
 
+<<<<<<< HEAD
     private void Awake() {
         PopulatePool();
     }
 
     private void Start() {
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
+=======
+    private void Start() {
+        LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
+        PopulatePool();
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
@@ -44,7 +50,11 @@ public class ObjectPool : MonoBehaviour {
         // Reset champion positions to spawn points, activate all components, reset health
         for (int i = 0; i < poolSize; i++) {
             pool[i].transform.position = spawnPoints[i].transform.position;
+<<<<<<< HEAD
             pool[i].GetComponent<ChampionAim>().enabled = true;
+=======
+            pool[i].GetComponent<ChampionAimMelee>().enabled = true;
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
             pool[i].GetComponent<ChampionMovement>().enabled = true;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
             pool[i].GetComponent<Collider2D>().enabled = true;

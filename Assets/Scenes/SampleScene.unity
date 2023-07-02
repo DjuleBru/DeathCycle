@@ -2107,6 +2107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b68dcf851984e46a800c5af65caa6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
 --- !u!4 &1709166912
 Transform:
   m_ObjectHideFlags: 0
@@ -2123,6 +2124,20 @@ Transform:
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1816744082
+=======
+<<<<<<< Updated upstream
+  moveSpeed: 2
+--- !u!114 &1801932485
+=======
+  champion: {fileID: 950238747665873915, guid: c2fc9e60ba579db4ea842ca59e86ec10, type: 3}
+  spawnPoints:
+  - {fileID: 609754915}
+  - {fileID: 531708640}
+  - {fileID: 1528562552}
+  - {fileID: 414491899}
+  - {fileID: 389389552}
+--- !u!1 &1872335950
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2130,26 +2145,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< HEAD
   - component: {fileID: 1816744083}
   - component: {fileID: 1816744084}
   m_Layer: 0
   m_Name: ObjectPool
+=======
+  - component: {fileID: 1872335951}
+  - component: {fileID: 1872335953}
+  - component: {fileID: 1872335952}
+  m_Layer: 0
+  m_Name: RecPlayCountDownText
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< HEAD
 --- !u!4 &1816744083
 Transform:
+=======
+--- !u!224 &1872335951
+RectTransform:
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 1816744082}
+=======
+  m_GameObject: {fileID: 1872335950}
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
+<<<<<<< HEAD
   m_Children:
   - {fileID: 609754915}
   - {fileID: 531708640}
@@ -2160,6 +2193,19 @@ Transform:
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1816744084
+=======
+  m_Children: []
+  m_Father: {fileID: 1402230221}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 365, y: -87}
+  m_SizeDelta: {x: 352.1, y: 72.2}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1872335952
+>>>>>>> Stashed changes
+>>>>>>> parent of e2851f3 (Revert "Initial commit")
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
