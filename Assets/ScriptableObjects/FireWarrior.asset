@@ -17,7 +17,7 @@ MonoBehaviour:
   velPower: 0.9
   acceleration: 5
   deceleration: 8
-  frictionAmount: 0.5
+  frictionAmount: 0.4
   jumpForce: 5
   jumpCoyoteTime: 0.1
   jumpInputBufferTime: 0.1

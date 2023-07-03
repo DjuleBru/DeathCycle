@@ -1486,6 +1486,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1494390111901597608, guid: 5bfe880bfede1434f97c341a70d391b8, type: 3}
+      propertyPath: loopTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1494390111901597608, guid: 5bfe880bfede1434f97c341a70d391b8, type: 3}
+      propertyPath: loopPauseTime
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1494390111901597609, guid: 5bfe880bfede1434f97c341a70d391b8, type: 3}
       propertyPath: m_Name
       value: LoopManager
@@ -1559,7 +1567,7 @@ PrefabInstance:
     - target: {fileID: 2112942741663515659, guid: b8ad3b98981a73a4d92099bd350466e8, type: 3}
       propertyPath: champion
       value: 
-      objectReference: {fileID: 880949846306087877, guid: a93a4b06960234c42a8dcd6764ee0ba8, type: 3}
+      objectReference: {fileID: 8107192383800292863, guid: afd12343b7bb1fa44b09d979dcf3fa1b, type: 3}
     - target: {fileID: 2112942741663515660, guid: b8ad3b98981a73a4d92099bd350466e8, type: 3}
       propertyPath: m_RootOrder
       value: 5

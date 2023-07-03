@@ -19,15 +19,20 @@ public class LoopManager : MonoBehaviour {
         Pause,
         Recording,
         Playbacking,
+        RecordingEndBuffer,
+        PlaybackEndBuffer,
     }
 
     private State state;
 
     [SerializeField] private float loopPauseTime = 0.1f;
-    [SerializeField] private float loopTime = 200f;
+    [SerializeField] private float loopTime = 3f;
+    [SerializeField] private float loopEndBufferTime = 2f;
+
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
     private float loopPauseTimer = 0f;
+    private float loopEndBufferTimer = 0f;
 
     private int loopNumber = 0;
 
@@ -63,12 +68,13 @@ public class LoopManager : MonoBehaviour {
                 }
 
                 break;
+
             case State.Recording:
 
                 if (loopRecordingTimer <= loopTime) {
                     loopRecordingTimer += Time.deltaTime;
                 } else {
-                    state = State.Playbacking;
+                    state = State.RecordingEndBuffer;
                     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
                         loopNumber = loopNumber,
                         state = state
@@ -77,12 +83,28 @@ public class LoopManager : MonoBehaviour {
                 }
 
                 break;
+
+            case State.RecordingEndBuffer:
+
+                if (loopEndBufferTimer <= loopEndBufferTime) {
+                    loopEndBufferTimer += Time.deltaTime;
+                } else {
+                    state = State.Playbacking;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopEndBufferTimer = 0f;
+                }
+
+                break;
+
             case State.Playbacking:
 
                 if (loopPlaybackTimer <= loopTime) {
                     loopPlaybackTimer += Time.deltaTime;
                 } else {
-                    state = State.Pause;
+                    state = State.PlaybackEndBuffer;
                     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
                         loopNumber = loopNumber,
                         state = state
@@ -90,6 +112,20 @@ public class LoopManager : MonoBehaviour {
 
                     loopPauseTimer = 0f;
                     loopNumber++;
+                }
+                break;
+
+            case State.PlaybackEndBuffer:
+
+                if (loopEndBufferTimer <= loopEndBufferTime) {
+                    loopEndBufferTimer += Time.deltaTime;
+                } else {
+                    state = State.Pause;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopEndBufferTimer = 0f;
                 }
                 break;
         }

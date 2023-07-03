@@ -14,7 +14,6 @@ public class ChampionMovement : MonoBehaviour
     private InputManager inputManager;
     private float moveInput;
 
-    private ChampionRecPlaybackManager loopManager;
     private ChampionSO championSO;
     private Champion champion;
     private Rigidbody2D rb;
@@ -42,6 +41,7 @@ public class ChampionMovement : MonoBehaviour
     private bool loopOnPause;
     private bool loopOnRecording;
     private bool loopOnPlaybacking;
+    private bool loopOnEndBuffer;
     #endregion
 
     #region ANIMATOR PARAMETERS
@@ -111,13 +111,16 @@ public class ChampionMovement : MonoBehaviour
         #region MOVEMENT
         if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
             moveDir = moveInput;
-            HandleMovement(moveDir);
         }
-        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause) {
+        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause && !loopOnEndBuffer) {
             moveDir = championActionsThisFrame.moveDir;
-            HandleMovement(moveDir);
         }
-            #endregion
+        if (loopOnEndBuffer || loopOnPause) {
+            moveDir = 0f;
+        }
+        HandleMovement(moveDir);
+
+        #endregion
 
         #region JUMP
 
@@ -207,24 +210,34 @@ public class ChampionMovement : MonoBehaviour
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
-        rb.velocity = Vector3.zero;
-
-        Debug.Log(e.state.ToString());
         if (e.state == LoopManager.State.Pause) {
             loopOnPause = true;
             loopOnRecording = false;
             loopOnPlaybacking = false;
+            loopOnEndBuffer = false;
         }
         if (e.state == LoopManager.State.Recording) {
             loopOnPause = false;
             loopOnRecording = true;
             loopOnPlaybacking = false;
+            loopOnEndBuffer = false;
         }
         if (e.state == LoopManager.State.Playbacking) {
             loopOnPause = false;
             loopOnRecording = false;
             loopOnPlaybacking = true;
+            loopOnEndBuffer = false;
         }
+        if (e.state == LoopManager.State.PlaybackEndBuffer || e.state == LoopManager.State.RecordingEndBuffer) {
+            loopOnPause = false;
+            loopOnRecording = false;
+            loopOnPlaybacking = false;
+            loopOnEndBuffer = true;
+        }
+    }
+
+    public void ResetVelocity() {
+        rb.velocity = Vector3.zero;
     }
 
     public void SetChampionActionsThisFrame(ChampionActions championActions) {

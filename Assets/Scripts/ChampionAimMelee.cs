@@ -141,4 +141,12 @@ public class ChampionAimMelee : MonoBehaviour
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
         this.championActionsThisFrame = championActions;
     }
+
+    public void ResetAttacks() {
+        isAttacking1 = false;
+        isAttacking2 = false;
+        isAttacking3 = false;
+        championAttackComboTimer = 0f;
+        championAttackTimer = 0f;
+    }
 }
