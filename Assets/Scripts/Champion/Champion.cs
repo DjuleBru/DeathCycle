@@ -11,7 +11,7 @@ public class Champion : MonoBehaviour {
 
     private ChampionRecPlaybackManager championRecPlaybackManager;
     private ChampionMovement championMovement;
-    private ChampionAimMelee championAimMelee;
+    private ChampionAim championAim;
     private Collider2D championCollider;
 
     private float championHealth;
@@ -29,7 +29,7 @@ public class Champion : MonoBehaviour {
     private void Awake() {
         championRecPlaybackManager = GetComponent<ChampionRecPlaybackManager>();
         championMovement = GetComponent<ChampionMovement>();
-        championAimMelee = GetComponent<ChampionAimMelee>();
+        championAim = GetComponent<ChampionAim>();
         championCollider = GetComponent<Collider2D>();
     }
     private void Start() {
@@ -64,7 +64,7 @@ public class Champion : MonoBehaviour {
     }
 
     private void Die() {
-            championAimMelee.enabled = false;
+            championAim.enabled = false;
             championMovement.enabled = false;
             championRecPlaybackManager.enabled = false;
             championCollider.enabled = false;

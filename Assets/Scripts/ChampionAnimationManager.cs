@@ -6,13 +6,13 @@ public class ChampionAnimationManager : MonoBehaviour
 {
     private Animator animator;
     private ChampionMovement championMovement;
-    private ChampionAimMelee championAimMelee;
+    private ChampionAim championAim;
 
     private void Start() {
         animator = GetComponentInChildren<Animator>();
         championMovement = GetComponent<ChampionMovement>();
-        championAimMelee = GetComponent<ChampionAimMelee>();
-        championAimMelee.OnMeleeAttack += ChampionAimMelee_OnMeleeAttack;
+        championAim = GetComponent<ChampionAim>();
+        championAim.OnAttack += ChampionAim_OnAttack;
     }
 
 
@@ -34,7 +34,7 @@ public class ChampionAnimationManager : MonoBehaviour
     }
 
     #region attack
-    private void ChampionAimMelee_OnMeleeAttack(object sender, ChampionAimMelee.OnMeleeAttackEventArgs e) {
+    private void ChampionAim_OnAttack(object sender, ChampionAim.OnAttackEventArgs e) {
         if (e.attackCount == 1) {
             animator.SetTrigger("Attack1");
             animator.SetBool("IsAttacking2", false);

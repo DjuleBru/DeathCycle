@@ -9,7 +9,7 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
 
     private InputRecorder inputRecorder;
     private ChampionMovement championMovement;
-    private ChampionAimMelee championAimMelee;
+    private ChampionAim championAim;
     private ChampionActions championActions;
     private Champion champion;
 
@@ -29,7 +29,7 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
     private void Awake() {
         inputRecorder = FindObjectOfType<InputRecorder>();
         championMovement = GetComponent<ChampionMovement>();
-        championAimMelee = GetComponent<ChampionAimMelee>();
+        championAim = GetComponent<ChampionAim>();
         champion = GetComponent<Champion>();
 
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
@@ -97,7 +97,7 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
             }
 
             championMovement.SetChampionActionsThisFrame(championActions);
-            championAimMelee.SetChampionActionsThisFrame(championActions);
+            championAim.SetChampionActionsThisFrame(championActions);
 
         }
     }

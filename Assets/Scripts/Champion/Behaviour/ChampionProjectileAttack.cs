@@ -23,16 +23,16 @@ public class ChampionProjectileAttack : MonoBehaviour
 
     private void Start() {
         championAttackDamage = championSO.championAttackDamage;
-        championAim.OnShoot += ChampionAim_OnShoot;
+        championAim.OnAttack += ChampionAim_OnAttack;
     }
 
-    private void ChampionAim_OnShoot(object sender, ChampionAim.OnShootEventArgs e) {
+    private void ChampionAim_OnAttack(object sender, ChampionAim.OnAttackEventArgs e) {
             animator.SetTrigger("Attack");
-            Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
+            // Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
 
             Vector3 attackDir = e.attackDir;
 
-            Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
-            bulletTransform.GetComponent<Projectile>().Setup(attackDir, championAttackDamage);
+            // Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
+            //bulletTransform.GetComponent<Projectile>().Setup(attackDir, championAttackDamage);
     }
 }

@@ -55,20 +55,20 @@ public class ObjectPool : MonoBehaviour {
     private void ActivatePool() {
         // Activate all components, reset velocity to zero, reset attacks
         for (int i = 0; i < poolSize; i++) {
-            pool[i].GetComponent<ChampionAimMelee>().enabled = true;
+            pool[i].GetComponent<ChampionAim>().enabled = true;
             pool[i].GetComponent<ChampionMovement>().enabled = true;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
             pool[i].GetComponent<Collider2D>().enabled = true;
 
             pool[i].GetComponent<ChampionMovement>().ResetVelocity();
-            pool[i].GetComponent<ChampionAimMelee>().ResetAttacks();
+            pool[i].GetComponent<ChampionAim>().ResetAttacks();
         }
     }
 
     private void DeactivatePool() {
         // Deactivate all components
         for (int i = 0; i < poolSize; i++) {
-            pool[i].GetComponent<ChampionAimMelee>().enabled = false;
+            pool[i].GetComponent<ChampionAim>().enabled = false;
             pool[i].GetComponent<ChampionMovement>().enabled = false;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = false;
         }

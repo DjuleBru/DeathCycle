@@ -5,23 +5,28 @@ using UnityEngine;
 
 public class ChampionAim : MonoBehaviour
 {
-    [SerializeField] private Transform weaponEndPointPosition;
 
     private ChampionActions championActionsThisFrame = new ChampionActions();
     private Champion champion;
     private ChampionSO championSO;
 
-    private Transform aimTransform;
     private InputManager inputManager;
 
     private float championAttackMaxRate;
+    private float championAttackComboBuffer = 0.5f;
+    private float championAttackComboTime;
+    private float championAttackComboTimer;
     private float championAttackTimer;
 
-    public event EventHandler<OnShootEventArgs> OnShoot;
-    public class OnShootEventArgs : EventArgs {
-        public Vector3 weaponEndPointPosition;
+    public event EventHandler<OnAttackEventArgs> OnAttack;
+    public class OnAttackEventArgs : EventArgs {
         public Vector3 attackDir;
+        public int attackCount;
     }
+
+    private bool isAttacking1;
+    private bool isAttacking2;
+    private bool isAttacking3;
 
     private bool loopOnPause;
     private bool loopOnRecording;
@@ -29,7 +34,6 @@ public class ChampionAim : MonoBehaviour
 
     private void Awake() {
         champion = GetComponent<Champion>();
-        aimTransform = transform.Find("Weapon");
         inputManager = FindObjectOfType<InputManager>();
         championSO = champion.ChampionSO;
 
@@ -39,44 +43,32 @@ public class ChampionAim : MonoBehaviour
 
     private void Start() {
         championAttackMaxRate = championSO.championAttackMaxRate;
+        championAttackComboTime = championAttackMaxRate + championAttackComboBuffer;
     }
 
     private void Update() {
         championAttackTimer += Time.deltaTime;
+        championAttackComboTimer += Time.deltaTime;
 
-        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
-            Vector3 aimDir = (mousePosition - transform.position).normalized;
-
-            // Loop is recording and champion's active loop
-            HandleAim(aimDir);
+        if (championAttackComboTimer >= championAttackComboTime && isAttacking1) {
+            isAttacking1 = false;
+        }
+        if (championAttackComboTimer >= championAttackComboTime && isAttacking2) {
+            isAttacking2 = false;
+        }
+        if (championAttackComboTimer >= championAttackComboTime && isAttacking3) {
+            isAttacking3 = false;
         }
 
-        #region AIM PLAYBACK
+        #region ATTACK PLAYBACK
         if (loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
             // Loop is not recording OR not champion's active loop
 
             Vector3 mousePosition = championActionsThisFrame.mousePos;
-            Vector3 aimDir = (mousePosition - transform.position).normalized;
+            Vector3 attackDir = mousePosition - transform.position;
 
-            HandleAim(aimDir);
-            #endregion
-
-        #region ATTACK PLAYBACK
             if (championActionsThisFrame.AttackPressed == true) {
-
-                if (championAttackTimer >= championAttackMaxRate) {
-
-                    Vector3 attackDir = mousePosition - weaponEndPointPosition.position;
-
-                    
-                    OnShoot?.Invoke(this, new OnShootEventArgs {
-                        // Adding attackDir.normalized because instantiate on Update instead of on Event creates bug
-                        weaponEndPointPosition = weaponEndPointPosition.position + attackDir.normalized,
-                        attackDir = attackDir
-                    });
-                    championAttackTimer = 0f;
-                }
+                HandleComboAttacks(attackDir);
             }
         }
         #endregion
@@ -84,39 +76,50 @@ public class ChampionAim : MonoBehaviour
 
     private void InputManager_OnAttackPressed(object sender, EventArgs e) {
         if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            if (championAttackTimer >= championAttackMaxRate) {
 
-                Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
-                Vector3 attackDir = mousePosition - weaponEndPointPosition.position;
+            Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
+            Vector3 attackDir = mousePosition - transform.position;
 
-                OnShoot?.Invoke(this, new OnShootEventArgs {
-                    weaponEndPointPosition = weaponEndPointPosition.position,
-                    attackDir = attackDir
-                });
-                championAttackTimer = 0f;
-            }
+            HandleComboAttacks(attackDir);
         }
 
     }
 
-    private void HandleAim(Vector3 aimDir) {
+    private void HandleComboAttacks(Vector3 attackDir) {
+
+        if (isAttacking2 && championAttackComboTimer < championAttackComboTime) {
+
+            isAttacking3 = true;
+            OnAttack?.Invoke(this, new OnAttackEventArgs {
+                attackDir = attackDir,
+                attackCount = 3
+            });
+            championAttackTimer = 0f;
+            championAttackComboTimer = 0f;
+        }
+
+        if (isAttacking1 && championAttackComboTimer < championAttackComboTime) {
+
+            isAttacking2 = true;
+            OnAttack?.Invoke(this, new OnAttackEventArgs {
+                attackDir = attackDir,
+                attackCount = 2
+            });
+            championAttackTimer = 0f;
+            championAttackComboTimer = 0f;
+        }
 
         if (championAttackTimer >= championAttackMaxRate) {
-            // Champion is not attacking
 
-            float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-            aimTransform.eulerAngles = new Vector3(0, 0, angle);
-
-            Vector3 aimLocalScale = Vector3.one;
-            if (angle > 90 || angle < -90) {
-                aimLocalScale.y = -1f;
-            } else {
-                aimLocalScale.y = +1f;
-            }
-            aimTransform.localScale = aimLocalScale;
+            isAttacking1 = true;
+            OnAttack?.Invoke(this, new OnAttackEventArgs {
+                attackDir = attackDir,
+                attackCount = 1
+            });
+            championAttackTimer = 0f;
+            championAttackComboTimer = 0f;
         }
     }
-
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
         if (e.state == LoopManager.State.Pause) {
             loopOnPause = true;
@@ -135,8 +138,15 @@ public class ChampionAim : MonoBehaviour
         }
     }
 
-
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
         this.championActionsThisFrame = championActions;
+    }
+
+    public void ResetAttacks() {
+        isAttacking1 = false;
+        isAttacking2 = false;
+        isAttacking3 = false;
+        championAttackComboTimer = 0f;
+        championAttackTimer = 0f;
     }
 }
