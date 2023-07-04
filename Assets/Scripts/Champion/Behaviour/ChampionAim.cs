@@ -7,8 +7,11 @@ public class ChampionAim : MonoBehaviour
 {
 
     private ChampionActions championActionsThisFrame = new ChampionActions();
+
+    private ChampionMovement championMovement;
     private Champion champion;
     private ChampionSO championSO;
+    private Rigidbody2D rb;
 
     private InputManager inputManager;
 
@@ -36,6 +39,8 @@ public class ChampionAim : MonoBehaviour
         champion = GetComponent<Champion>();
         inputManager = FindObjectOfType<InputManager>();
         championSO = champion.ChampionSO;
+        championMovement = GetComponent<ChampionMovement>();
+        rb = GetComponent<Rigidbody2D>();
 
         inputManager.OnAttackPressed += InputManager_OnAttackPressed;
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
@@ -47,6 +52,7 @@ public class ChampionAim : MonoBehaviour
     }
 
     private void Update() {
+
         championAttackTimer += Time.deltaTime;
         championAttackComboTimer += Time.deltaTime;
 
@@ -68,7 +74,7 @@ public class ChampionAim : MonoBehaviour
             Vector3 attackDir = mousePosition - transform.position;
 
             if (championActionsThisFrame.AttackPressed == true) {
-                HandleComboAttacks(attackDir);
+                HandleAttacks(attackDir);
             }
         }
         #endregion
@@ -80,16 +86,28 @@ public class ChampionAim : MonoBehaviour
             Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
             Vector3 attackDir = mousePosition - transform.position;
 
-            HandleComboAttacks(attackDir);
+            HandleAttacks(attackDir);
+        
         }
 
     }
 
-    private void HandleComboAttacks(Vector3 attackDir) {
+    private void HandleAttacks(Vector3 attackDir) {
+
+        if (rb.velocity.y != 0) {
+            // Champion is jumping
+            if (championAttackTimer >= championAttackMaxRate) {
+
+                OnAttack?.Invoke(this, new OnAttackEventArgs {
+                    attackDir = attackDir,
+                    attackCount = 0
+                });
+            }
+            championAttackTimer = 0f;
+        }
 
         if (isAttacking2 && championAttackComboTimer < championAttackComboTime) {
 
-            isAttacking3 = true;
             OnAttack?.Invoke(this, new OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 3
@@ -100,7 +118,6 @@ public class ChampionAim : MonoBehaviour
 
         if (isAttacking1 && championAttackComboTimer < championAttackComboTime) {
 
-            isAttacking2 = true;
             OnAttack?.Invoke(this, new OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 2
@@ -111,7 +128,6 @@ public class ChampionAim : MonoBehaviour
 
         if (championAttackTimer >= championAttackMaxRate) {
 
-            isAttacking1 = true;
             OnAttack?.Invoke(this, new OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 1
@@ -148,5 +164,15 @@ public class ChampionAim : MonoBehaviour
         isAttacking3 = false;
         championAttackComboTimer = 0f;
         championAttackTimer = 0f;
+    }
+
+    public void IsAttacking1(bool isAttacking1) {
+        this.isAttacking1 = isAttacking1;
+    }
+    public void IsAttacking2(bool isAttacking3) {
+        this.isAttacking2 = isAttacking3;
+    }
+    public void IsAttacking3(bool isAttacking2) {
+        this.isAttacking3 = isAttacking2;
     }
 }

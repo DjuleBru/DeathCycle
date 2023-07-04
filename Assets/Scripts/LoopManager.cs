@@ -87,8 +87,10 @@ public class LoopManager : MonoBehaviour {
             case State.RecordingEndBuffer:
 
                 if (loopEndBufferTimer <= loopEndBufferTime) {
+                    SlowMotionEffect();
                     loopEndBufferTimer += Time.deltaTime;
                 } else {
+                    RestoreMotion();
                     state = State.Playbacking;
                     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
                         loopNumber = loopNumber,
@@ -118,8 +120,10 @@ public class LoopManager : MonoBehaviour {
             case State.PlaybackEndBuffer:
 
                 if (loopEndBufferTimer <= loopEndBufferTime) {
+                    SlowMotionEffect();
                     loopEndBufferTimer += Time.deltaTime;
                 } else {
+                    RestoreMotion();
                     state = State.Pause;
                     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
                         loopNumber = loopNumber,
@@ -129,6 +133,13 @@ public class LoopManager : MonoBehaviour {
                 }
                 break;
         }
+    }
+
+    private void SlowMotionEffect() {
+        Time.timeScale = 0.5f;
+    } 
+    private void RestoreMotion() {
+        Time.timeScale = 1f;
     }
 
 }

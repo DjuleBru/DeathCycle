@@ -45,9 +45,10 @@ public class ObjectPool : MonoBehaviour {
     }
 
     private void ResetPool() {
-        // Reset champion positions to spawn points, reset health
+        // Reset champion positions to spawn points, reset direction, reset health
         for (int i = 0; i < poolSize; i++) {
             pool[i].transform.position = spawnPoints[i].transform.position;
+            pool[i].transform.localScale = Vector3.one;
             pool[i].GetComponent<Champion>().ResetChampionHealth();
         }
     }
@@ -60,7 +61,7 @@ public class ObjectPool : MonoBehaviour {
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
             pool[i].GetComponent<Collider2D>().enabled = true;
 
-            pool[i].GetComponent<ChampionMovement>().ResetVelocity();
+            pool[i].GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
             pool[i].GetComponent<ChampionAim>().ResetAttacks();
         }
     }

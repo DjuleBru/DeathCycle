@@ -18,14 +18,14 @@ MonoBehaviour:
   acceleration: 5
   deceleration: 8
   frictionAmount: 0.4
-  jumpForce: 5
+  jumpForce: 7
   jumpCoyoteTime: 0.1
   jumpInputBufferTime: 0.1
   jumpCutMultiplier: 0.5
   gravityScale: 1
-  jumpCutGravityMult: 2
+  jumpCutGravityMult: 1.5
   maxFallSpeed: 20
-  championMaxHealth: 10
+  championMaxHealth: 100
   championAttackDamage: 5
   championAttackMaxRate: 0.5
   championSpecialDamage: 0

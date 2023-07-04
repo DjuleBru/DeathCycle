@@ -46,7 +46,7 @@ public class Champion : MonoBehaviour {
             float incomingDamage = incomingProjectile.ProjectileDamage;
 
             ReceiveDamage(incomingDamage);
-        };
+        }
     }
 
     public void ReceiveDamage(float incomingDamage) {

@@ -42,6 +42,8 @@ public class ChampionMovement : MonoBehaviour
     private bool loopOnRecording;
     private bool loopOnPlaybacking;
     private bool loopOnEndBuffer;
+
+    private bool isAttacking;
     #endregion
 
     #region ANIMATOR PARAMETERS
@@ -61,6 +63,7 @@ public class ChampionMovement : MonoBehaviour
         inputManager.OnJumpReleased += InputManager_OnJumpReleased;
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
+
 
     void Update() {
         #region TIMERS
@@ -118,13 +121,15 @@ public class ChampionMovement : MonoBehaviour
         if (loopOnEndBuffer || loopOnPause) {
             moveDir = 0f;
         }
+        if (isAttacking) {
+            moveDir = 0f;
+        } 
         HandleMovement(moveDir);
-
         #endregion
 
         #region JUMP
 
-        if (lastGroundedTime > 0 && lastPressedJumpTime > 0 && !isJumping) {
+        if (lastGroundedTime > 0 && lastPressedJumpTime > 0 && !isJumping && !isAttacking) {
             Jump();
         }
 
@@ -161,6 +166,16 @@ public class ChampionMovement : MonoBehaviour
         float movement = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, championSO.velPower) * Mathf.Sign(speedDiff);
 
         rb.AddForce(movement * Vector2.right);
+
+        // set visual left or right
+        if (moveInput != 0) {
+            if (moveInput > 0) {
+                gameObject.transform.localScale = new Vector3(1, 1, 1);
+            } else {
+                gameObject.transform.localScale = new Vector3(-1, 1, 1);
+            }
+        }
+
         #endregion
 
         #region Friction
@@ -236,8 +251,12 @@ public class ChampionMovement : MonoBehaviour
         }
     }
 
-    public void ResetVelocity() {
-        rb.velocity = Vector3.zero;
+    public void SetVelocity(Vector3 velocity) {
+        rb.velocity = velocity;
+    }
+
+    public void IsAttacking(bool isAttacking) {
+        this.isAttacking = isAttacking;
     }
 
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
