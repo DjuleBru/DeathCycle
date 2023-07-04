@@ -11,8 +11,8 @@ public class Champion : MonoBehaviour {
 
     private ChampionRecPlaybackManager championRecPlaybackManager;
     private ChampionMovement championMovement;
-    private ChampionAim championAim;
-    private Collider2D championCollider;
+    private ChampionAttack championAttack;
+    private Rigidbody2D rb;
 
     private float championHealth;
 
@@ -21,6 +21,7 @@ public class Champion : MonoBehaviour {
     public ChampionSO ChampionSO { get { return championSO; } }
 
     public event EventHandler<OnDamageReceivedEventArgs> OnDamageReceived;
+    public event EventHandler OnDeath;
 
     public class OnDamageReceivedEventArgs {
         public float championHealth;
@@ -29,8 +30,8 @@ public class Champion : MonoBehaviour {
     private void Awake() {
         championRecPlaybackManager = GetComponent<ChampionRecPlaybackManager>();
         championMovement = GetComponent<ChampionMovement>();
-        championAim = GetComponent<ChampionAim>();
-        championCollider = GetComponent<Collider2D>();
+        championAttack = GetComponent<ChampionAttack>();
+        rb = GetComponent<Rigidbody2D>();
     }
     private void Start() {
         ResetChampionHealth();
@@ -40,15 +41,15 @@ public class Champion : MonoBehaviour {
         this.spawnedLoopNumber = spawnedLoopNumber;
     }
 
+    /*
     private void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "Projectile") {
             Projectile incomingProjectile = collider.GetComponent<Projectile>();
             float incomingDamage = incomingProjectile.ProjectileDamage;
-
             ReceiveDamage(incomingDamage);
         }
     }
-
+    */
     public void ReceiveDamage(float incomingDamage) {
         championHealth -= incomingDamage;
 
@@ -64,10 +65,12 @@ public class Champion : MonoBehaviour {
     }
 
     private void Die() {
-            championAim.enabled = false;
-            championMovement.enabled = false;
-            championRecPlaybackManager.enabled = false;
-            championCollider.enabled = false;
+        championAttack.enabled = false;
+        championMovement.enabled = false;
+        championRecPlaybackManager.enabled = false;
+        rb.velocity = Vector3.zero;
+
+        OnDeath?.Invoke(this, EventArgs.Empty);
     }
 
     public void ResetChampionHealth() {

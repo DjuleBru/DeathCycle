@@ -7,19 +7,21 @@ public class ChampionAnimationManager : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private ChampionMovement championMovement;
-    private ChampionAim championAim;
+    private ChampionAttack championAttack;
     private Champion champion;
 
     private void Awake() {
         rb = GetComponentInParent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         championMovement = GetComponent<ChampionMovement>();
-        championAim = GetComponent<ChampionAim>();
+        championAttack = GetComponent<ChampionAttack>();
         champion = GetComponent<Champion>();
 
-        championAim.OnAttack += ChampionAim_OnAttack;
+        championAttack.OnAttack += ChampionAim_OnAttack;
         champion.OnDamageReceived += Champion_OnDamageReceived;
+        champion.OnDeath += Champion_OnDeath;
     }
+
 
     private void Update() {
 
@@ -35,24 +37,24 @@ public class ChampionAnimationManager : MonoBehaviour
         }
 
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")) {
-            championAim.IsAttacking1(true);
-            championAim.IsAttacking2(false);
-            championAim.IsAttacking3(false);
+            championAttack.IsAttacking1(true);
+            championAttack.IsAttacking2(false);
+            championAttack.IsAttacking3(false);
         }
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")) {
-            championAim.IsAttacking2(true);
-            championAim.IsAttacking1(false);
-            championAim.IsAttacking3(false);
+            championAttack.IsAttacking2(true);
+            championAttack.IsAttacking1(false);
+            championAttack.IsAttacking3(false);
         }
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3")) {
-            championAim.IsAttacking3(true);
-            championAim.IsAttacking2(false);
-            championAim.IsAttacking1(false);
+            championAttack.IsAttacking3(true);
+            championAttack.IsAttacking2(false);
+            championAttack.IsAttacking1(false);
         }
         if (!this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3")) {
-            championAim.IsAttacking3(false);
-            championAim.IsAttacking2(false);
-            championAim.IsAttacking1(false);
+            championAttack.IsAttacking3(false);
+            championAttack.IsAttacking2(false);
+            championAttack.IsAttacking1(false);
         }
                 
         #endregion
@@ -84,7 +86,7 @@ public class ChampionAnimationManager : MonoBehaviour
     }
 
     #region attack
-    private void ChampionAim_OnAttack(object sender, ChampionAim.OnAttackEventArgs e) {
+    private void ChampionAim_OnAttack(object sender, ChampionAttack.OnAttackEventArgs e) {
         if (e.attackCount == 0) {
             animator.SetTrigger("AirAttack");
         }
@@ -108,6 +110,12 @@ public class ChampionAnimationManager : MonoBehaviour
     #region HIT
     private void Champion_OnDamageReceived(object sender, Champion.OnDamageReceivedEventArgs e) {
         animator.SetTrigger("Hit");
+    }
+    #endregion
+
+    #region DEATH
+    private void Champion_OnDeath(object sender, System.EventArgs e) {
+        animator.Play("Die");
     }
     #endregion
 }

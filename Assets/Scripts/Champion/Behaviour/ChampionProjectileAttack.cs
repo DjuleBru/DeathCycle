@@ -6,7 +6,7 @@ using UnityEngine;
 public class ChampionProjectileAttack : MonoBehaviour
 {
 
-    private ChampionAim championAim;
+    private ChampionAttack championAttack;
     private Champion champion;
     private ChampionSO championSO;
 
@@ -17,16 +17,16 @@ public class ChampionProjectileAttack : MonoBehaviour
 
     private void Awake() {
         champion = GetComponent<Champion>();
-        championAim = champion.GetComponent<ChampionAim>();
+        championAttack = champion.GetComponent<ChampionAttack>();
         championSO = champion.ChampionSO;
     }
 
     private void Start() {
         championAttackDamage = championSO.championAttackDamage;
-        championAim.OnAttack += ChampionAim_OnAttack;
+        championAttack.OnAttack += ChampionAim_OnAttack;
     }
 
-    private void ChampionAim_OnAttack(object sender, ChampionAim.OnAttackEventArgs e) {
+    private void ChampionAim_OnAttack(object sender, ChampionAttack.OnAttackEventArgs e) {
             animator.SetTrigger("Attack");
             // Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
 

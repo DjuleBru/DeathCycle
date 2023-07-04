@@ -28,9 +28,7 @@ public class ChampionHealthBarUI : MonoBehaviour
 
         if (healthBar.fillAmount == 0) {
             Hide();
-        }
-
-        if (healthBarDisplayTimer  > 0) {
+        } else if (healthBarDisplayTimer  > 0) {
             Show();
             healthBarDisplayTimer -= Time.deltaTime;
         } else {

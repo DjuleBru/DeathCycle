@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChampionAim : MonoBehaviour
+public class ChampionAttack : MonoBehaviour
 {
-
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
     private ChampionMovement championMovement;
@@ -16,9 +15,6 @@ public class ChampionAim : MonoBehaviour
     private InputManager inputManager;
 
     private float championAttackMaxRate;
-    private float championAttackComboBuffer = 0.5f;
-    private float championAttackComboTime;
-    private float championAttackComboTimer;
     private float championAttackTimer;
 
     public event EventHandler<OnAttackEventArgs> OnAttack;
@@ -48,23 +44,11 @@ public class ChampionAim : MonoBehaviour
 
     private void Start() {
         championAttackMaxRate = championSO.championAttackMaxRate;
-        championAttackComboTime = championAttackMaxRate + championAttackComboBuffer;
     }
 
     private void Update() {
 
         championAttackTimer += Time.deltaTime;
-        championAttackComboTimer += Time.deltaTime;
-
-        if (championAttackComboTimer >= championAttackComboTime && isAttacking1) {
-            isAttacking1 = false;
-        }
-        if (championAttackComboTimer >= championAttackComboTime && isAttacking2) {
-            isAttacking2 = false;
-        }
-        if (championAttackComboTimer >= championAttackComboTime && isAttacking3) {
-            isAttacking3 = false;
-        }
 
         #region ATTACK PLAYBACK
         if (loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
@@ -87,7 +71,6 @@ public class ChampionAim : MonoBehaviour
             Vector3 attackDir = mousePosition - transform.position;
 
             HandleAttacks(attackDir);
-        
         }
 
     }
@@ -106,24 +89,22 @@ public class ChampionAim : MonoBehaviour
             championAttackTimer = 0f;
         }
 
-        if (isAttacking2 && championAttackComboTimer < championAttackComboTime) {
+        if (isAttacking2) {
 
             OnAttack?.Invoke(this, new OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 3
             });
             championAttackTimer = 0f;
-            championAttackComboTimer = 0f;
         }
 
-        if (isAttacking1 && championAttackComboTimer < championAttackComboTime) {
+        if (isAttacking1) {
 
             OnAttack?.Invoke(this, new OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 2
             });
             championAttackTimer = 0f;
-            championAttackComboTimer = 0f;
         }
 
         if (championAttackTimer >= championAttackMaxRate) {
@@ -133,7 +114,6 @@ public class ChampionAim : MonoBehaviour
                 attackCount = 1
             });
             championAttackTimer = 0f;
-            championAttackComboTimer = 0f;
         }
     }
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
@@ -162,7 +142,6 @@ public class ChampionAim : MonoBehaviour
         isAttacking1 = false;
         isAttacking2 = false;
         isAttacking3 = false;
-        championAttackComboTimer = 0f;
         championAttackTimer = 0f;
     }
 
