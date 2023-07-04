@@ -11,6 +11,8 @@ public class InputRecorder : MonoBehaviour
     private bool jumpReleased;
     private bool attackPressed;
     private bool attackReleased;
+    private bool specialPressed;
+    private bool specialReleased;
 
     private void Awake() {
         inputManager = FindObjectOfType<InputManager>();
@@ -19,42 +21,56 @@ public class InputRecorder : MonoBehaviour
         inputManager.OnJumpReleased += InputManager_OnJumpReleased;
         inputManager.OnAttackPressed += InputManager_OnAttackPressed;
         inputManager.OnAttackReleased += InputManager_OnAttackReleased;
+        inputManager.OnSpecialPressed += InputManager_OnSpecialPressed;
+        inputManager.OnSpecialReleased += InputManager_OnSpecialReleased;
     }
-
 
     private void Update() {
 
         championActionsThisFrame.moveDir = inputManager.GetMoveInput();
         championActionsThisFrame.mousePos = inputManager.GetMousePositionWorldSpace();
 
+        championActionsThisFrame.JumpPressed = false;
+        championActionsThisFrame.JumpReleased = false;
+        championActionsThisFrame.AttackPressed = false;
+        championActionsThisFrame.AttackReleased = false;
+        championActionsThisFrame.SpecialPressed = false;
+        championActionsThisFrame.SpecialReleased = false;
+
+
         if (jumpPressed) {
             championActionsThisFrame.JumpPressed = true;
-            jumpPressed = false;
-        } else {
-            championActionsThisFrame.JumpPressed = false;
         }
 
         if (jumpReleased) {
             championActionsThisFrame.JumpReleased = true;
-            jumpReleased = false;
-        } else {
-            championActionsThisFrame.JumpReleased = false;
         }
 
         if (attackPressed) {
             championActionsThisFrame.AttackPressed = true;
-            attackPressed = false;
-        } else {
-            championActionsThisFrame.AttackPressed = false;
         }
 
         if (attackReleased) {
             championActionsThisFrame.AttackReleased = true;
-            attackReleased = false;
-        } else {
-            championActionsThisFrame.AttackReleased = false;
         }
 
+        if (specialPressed) {
+            championActionsThisFrame.SpecialPressed = true;
+        }
+
+        if (specialReleased) {
+            championActionsThisFrame.SpecialReleased = true;
+        }
+
+    }
+
+
+    private void InputManager_OnSpecialReleased(object sender, System.EventArgs e) {
+        specialReleased = true;
+    }
+
+    private void InputManager_OnSpecialPressed(object sender, System.EventArgs e) {
+        specialPressed = true;
     }
 
     private void InputManager_OnAttackReleased(object sender, System.EventArgs e) {

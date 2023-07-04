@@ -9,6 +9,9 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnJumpReleased;
     public event EventHandler OnAttackPressed;
     public event EventHandler OnAttackReleased;
+    public event EventHandler OnSpecialPressed;
+    public event EventHandler OnSpecialReleased;
+
     private InputSystem inputSystem;
 
     private Camera mainCamera;
@@ -22,6 +25,16 @@ public class InputManager : MonoBehaviour
         inputSystem.Player.Jump.canceled += Jump_released;
         inputSystem.Player.Attack.started += Attack_performed;
         inputSystem.Player.Attack.canceled += Attack_canceled;
+        inputSystem.Player.Special.started += Special_started;
+        inputSystem.Player.Special.canceled += Special_canceled;
+    }
+
+    private void Special_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnSpecialReleased?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Special_started(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnSpecialPressed?.Invoke(this, EventArgs.Empty);
     }
 
     private void Attack_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj) {

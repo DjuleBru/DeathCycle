@@ -23,6 +23,7 @@ public class ObjectPool : MonoBehaviour {
         }
         if (e.state == LoopManager.State.Recording) {
             ActivatePool();
+            ResetPool();
             pool[e.loopNumber].SetActive(true);
             pool[e.loopNumber].GetComponent<Champion>().SetSpawnedLoopNumber(e.loopNumber);
         }
@@ -31,7 +32,7 @@ public class ObjectPool : MonoBehaviour {
             ResetPool();
         }
         if (e.state == LoopManager.State.PlaybackEndBuffer || e.state == LoopManager.State.RecordingEndBuffer) {
-            
+            DeactivatePool();
         }
     }
 
@@ -50,6 +51,7 @@ public class ObjectPool : MonoBehaviour {
             pool[i].transform.position = spawnPoints[i].transform.position;
             pool[i].transform.localScale = Vector3.one;
             pool[i].GetComponent<Champion>().ResetChampionHealth();
+            pool[i].GetComponent<ChampionAttack>().ResetAttacks();
             pool[i].GetComponent<Animator>().Play("Idle");
         }
     }
@@ -63,12 +65,11 @@ public class ObjectPool : MonoBehaviour {
             pool[i].GetComponent<Collider2D>().enabled = true;
 
             pool[i].GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
-            pool[i].GetComponent<ChampionAttack>().ResetAttacks();
         }
     }
 
     private void DeactivatePool() {
-        // Deactivate all components
+        // Deactivate all controller components
         for (int i = 0; i < poolSize; i++) {
             pool[i].GetComponent<ChampionAttack>().enabled = false;
             pool[i].GetComponent<ChampionMovement>().enabled = false;

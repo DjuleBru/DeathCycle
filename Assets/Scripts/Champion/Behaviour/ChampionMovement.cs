@@ -12,7 +12,6 @@ public class ChampionMovement : MonoBehaviour
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
     private InputManager inputManager;
-    private float moveInput;
 
     private ChampionSO championSO;
     private Champion champion;
@@ -72,8 +71,14 @@ public class ChampionMovement : MonoBehaviour
         #endregion
 
         #region INPUTHANDLER
-        if (loopOnRecording) {
-            moveInput = inputManager.GetMoveInput();
+        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+            moveDir = inputManager.GetMoveInput();
+        }
+        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause && !loopOnEndBuffer) {
+            moveDir = championActionsThisFrame.moveDir;
+        }
+        if (loopOnEndBuffer || loopOnPause || isAttacking) {
+            moveDir = 0f;
         }
         #endregion
 
@@ -112,18 +117,6 @@ public class ChampionMovement : MonoBehaviour
     private void FixedUpdate() {
 
         #region MOVEMENT
-        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            moveDir = moveInput;
-        }
-        if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause && !loopOnEndBuffer) {
-            moveDir = championActionsThisFrame.moveDir;
-        }
-        if (loopOnEndBuffer || loopOnPause) {
-            moveDir = 0f;
-        }
-        if (isAttacking) {
-            moveDir = 0f;
-        } 
         HandleMovement(moveDir);
         #endregion
 

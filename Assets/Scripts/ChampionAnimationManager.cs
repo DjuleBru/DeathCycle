@@ -32,29 +32,22 @@ public class ChampionAnimationManager : MonoBehaviour
             championMovement.IsAttacking(false);
         }
 
+        championAttack.IsAttacking3(false);
+        championAttack.IsAttacking2(false);
+        championAttack.IsAttacking1(false);
+
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("AirAttack")) {
             championMovement.SetVelocity(Vector3.zero);
         }
 
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")) {
             championAttack.IsAttacking1(true);
-            championAttack.IsAttacking2(false);
-            championAttack.IsAttacking3(false);
         }
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")) {
             championAttack.IsAttacking2(true);
-            championAttack.IsAttacking1(false);
-            championAttack.IsAttacking3(false);
         }
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3")) {
             championAttack.IsAttacking3(true);
-            championAttack.IsAttacking2(false);
-            championAttack.IsAttacking1(false);
-        }
-        if (!this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3")) {
-            championAttack.IsAttacking3(false);
-            championAttack.IsAttacking2(false);
-            championAttack.IsAttacking1(false);
         }
                 
         #endregion
@@ -103,6 +96,7 @@ public class ChampionAnimationManager : MonoBehaviour
         if (e.attackCount == 3) {
             animator.SetTrigger("Attack3");
             animator.SetBool("IsAttacking3", true);
+            animator.SetBool("IsAttacking2", false);
         }
     }
     #endregion

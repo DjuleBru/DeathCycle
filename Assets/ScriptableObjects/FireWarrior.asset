@@ -12,20 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c249de9f0f408454892751c84da20275, type: 3}
   m_Name: FireWarrior
   m_EditorClassIdentifier: 
-  Champion: {fileID: 880949846306087877, guid: a93a4b06960234c42a8dcd6764ee0ba8, type: 3}
+  Champion: {fileID: 8107192383800292863, guid: afd12343b7bb1fa44b09d979dcf3fa1b, type: 3}
   moveSpeed: 1.3
   velPower: 0.9
   acceleration: 5
   deceleration: 8
   frictionAmount: 0.4
-  jumpForce: 7
+  jumpForce: 6
   jumpCoyoteTime: 0.1
   jumpInputBufferTime: 0.1
   jumpCutMultiplier: 0.5
   gravityScale: 1
   jumpCutGravityMult: 1.5
   maxFallSpeed: 20
-  championMaxHealth: 20
-  championAttackDamage: 5
+  championMaxHealth: 50
+  championAirAttackDamage: 10
+  championAttack1Damage: 10
+  championAttack2Damage: 5
+  championAttack3Damage: 15
   championAttackMaxRate: 0.5
-  championSpecialDamage: 0
+  championSpecialDamage: 20

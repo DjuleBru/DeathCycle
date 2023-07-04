@@ -7,15 +7,10 @@ public class ChampionAttack : MonoBehaviour
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
-    private ChampionMovement championMovement;
     private Champion champion;
-    private ChampionSO championSO;
     private Rigidbody2D rb;
 
     private InputManager inputManager;
-
-    private float championAttackMaxRate;
-    private float championAttackTimer;
 
     public event EventHandler<OnAttackEventArgs> OnAttack;
     public class OnAttackEventArgs : EventArgs {
@@ -34,22 +29,13 @@ public class ChampionAttack : MonoBehaviour
     private void Awake() {
         champion = GetComponent<Champion>();
         inputManager = FindObjectOfType<InputManager>();
-        championSO = champion.ChampionSO;
-        championMovement = GetComponent<ChampionMovement>();
         rb = GetComponent<Rigidbody2D>();
 
         inputManager.OnAttackPressed += InputManager_OnAttackPressed;
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
     }
 
-    private void Start() {
-        championAttackMaxRate = championSO.championAttackMaxRate;
-    }
-
     private void Update() {
-
-        championAttackTimer += Time.deltaTime;
-
         #region ATTACK PLAYBACK
         if (loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) {
             // Loop is not recording OR not champion's active loop
@@ -79,14 +65,11 @@ public class ChampionAttack : MonoBehaviour
 
         if (rb.velocity.y != 0) {
             // Champion is jumping
-            if (championAttackTimer >= championAttackMaxRate) {
 
                 OnAttack?.Invoke(this, new OnAttackEventArgs {
                     attackDir = attackDir,
                     attackCount = 0
                 });
-            }
-            championAttackTimer = 0f;
         }
 
         if (isAttacking2) {
@@ -95,7 +78,6 @@ public class ChampionAttack : MonoBehaviour
                 attackDir = attackDir,
                 attackCount = 3
             });
-            championAttackTimer = 0f;
         }
 
         if (isAttacking1) {
@@ -104,16 +86,14 @@ public class ChampionAttack : MonoBehaviour
                 attackDir = attackDir,
                 attackCount = 2
             });
-            championAttackTimer = 0f;
         }
 
-        if (championAttackTimer >= championAttackMaxRate) {
+        if (rb.velocity.y == 0 && !isAttacking2 && !isAttacking1) {
 
             OnAttack?.Invoke(this, new OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 1
             });
-            championAttackTimer = 0f;
         }
     }
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
@@ -142,16 +122,15 @@ public class ChampionAttack : MonoBehaviour
         isAttacking1 = false;
         isAttacking2 = false;
         isAttacking3 = false;
-        championAttackTimer = 0f;
     }
 
     public void IsAttacking1(bool isAttacking1) {
         this.isAttacking1 = isAttacking1;
     }
-    public void IsAttacking2(bool isAttacking3) {
-        this.isAttacking2 = isAttacking3;
+    public void IsAttacking2(bool isAttacking2) {
+        this.isAttacking2 = isAttacking2;
     }
-    public void IsAttacking3(bool isAttacking2) {
-        this.isAttacking3 = isAttacking2;
+    public void IsAttacking3(bool isAttacking3) {
+        this.isAttacking3 = isAttacking3;
     }
 }

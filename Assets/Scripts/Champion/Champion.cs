@@ -51,13 +51,16 @@ public class Champion : MonoBehaviour {
     }
     */
     public void ReceiveDamage(float incomingDamage) {
-        championHealth -= incomingDamage;
 
-        OnDamageReceived?.Invoke(this, new OnDamageReceivedEventArgs {
-            championHealth = championHealth
-        });
+        if (championHealth > 0) {
+            championHealth -= incomingDamage;
 
-        Instantiate(bloodPS, transform.position, Quaternion.identity);
+            OnDamageReceived?.Invoke(this, new OnDamageReceivedEventArgs {
+                championHealth = championHealth
+            });
+
+            Instantiate(bloodPS, transform.position, Quaternion.identity);
+        }
 
         if (championHealth <= 0) {
             Die();
@@ -65,10 +68,10 @@ public class Champion : MonoBehaviour {
     }
 
     private void Die() {
+        rb.velocity = Vector3.zero;
         championAttack.enabled = false;
         championMovement.enabled = false;
         championRecPlaybackManager.enabled = false;
-        rb.velocity = Vector3.zero;
 
         OnDeath?.Invoke(this, EventArgs.Empty);
     }

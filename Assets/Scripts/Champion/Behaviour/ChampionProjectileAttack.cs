@@ -22,7 +22,7 @@ public class ChampionProjectileAttack : MonoBehaviour
     }
 
     private void Start() {
-        championAttackDamage = championSO.championAttackDamage;
+        championAttackDamage = championSO.championAttack1Damage;
         championAttack.OnAttack += ChampionAim_OnAttack;
     }
 
