@@ -46,32 +46,31 @@ public class ObjectPool : MonoBehaviour {
     }
 
     private void ResetPool() {
-        // Reset champion positions to spawn points, reset direction, reset health
+        // Reset champion positions to spawn points, reset direction, reset health, reset velocity to zero
         for (int i = 0; i < poolSize; i++) {
             pool[i].transform.position = spawnPoints[i].transform.position;
             pool[i].transform.localScale = Vector3.one;
             pool[i].GetComponent<Champion>().ResetChampionHealth();
-            pool[i].GetComponent<ChampionAttack>().ResetAttacks();
+            pool[i].GetComponent<IChampionAttack>().ResetAttacks();
             pool[i].GetComponent<Animator>().Play("Idle");
+            pool[i].GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
         }
     }
 
     private void ActivatePool() {
-        // Activate all components, reset velocity to zero, reset attacks
+        // Activate all components
         for (int i = 0; i < poolSize; i++) {
-            pool[i].GetComponent<ChampionAttack>().enabled = true;
+            pool[i].GetComponent<IChampionAttack>().EnableAttacks();
             pool[i].GetComponent<ChampionMovement>().enabled = true;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
             pool[i].GetComponent<Collider2D>().enabled = true;
-
-            pool[i].GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
         }
     }
 
     private void DeactivatePool() {
         // Deactivate all controller components
         for (int i = 0; i < poolSize; i++) {
-            pool[i].GetComponent<ChampionAttack>().enabled = false;
+            pool[i].GetComponent<IChampionAttack>().DisableAttacks();
             pool[i].GetComponent<ChampionMovement>().enabled = false;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = false;
         }

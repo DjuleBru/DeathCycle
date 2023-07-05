@@ -9,7 +9,8 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
 
     private InputRecorder inputRecorder;
     private ChampionMovement championMovement;
-    private ChampionAttack championAttack;
+    private IChampionAttack IChampionAttack;
+    private IChampionSpecial IChampionSpecial;
     private ChampionActions championActions;
     private Champion champion;
 
@@ -29,7 +30,8 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
     private void Awake() {
         inputRecorder = FindObjectOfType<InputRecorder>();
         championMovement = GetComponent<ChampionMovement>();
-        championAttack = GetComponent<ChampionAttack>();
+        IChampionAttack = GetComponent<IChampionAttack>();
+        IChampionSpecial = GetComponent<IChampionSpecial>();
         champion = GetComponent<Champion>();
 
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
@@ -77,6 +79,8 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
                 SpecialPressed = championActions.SpecialPressed,
                 SpecialReleased = championActions.SpecialReleased,
             };
+
+       // Debug.Log("loopIndex " + recordingLoopIndex + " time " + loopTimer + " " + championActionsRecord[recordingLoopIndex].AttackPressed);
         
         recordingLoopIndex++;
 
@@ -84,7 +88,6 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
 
     void PlayBack() {
         if (playbackLoopIndex < championActionsRecord.Count) {
-
 
             championActions = championActionsRecord[playbackLoopIndex];
 
@@ -96,8 +99,11 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
                 } else { return; }
             }
 
+          //  Debug.Log("loopIndex " + playbackLoopIndex + " time " + loopTimer + " " + championActionsRecord[playbackLoopIndex].AttackPressed);
+
             championMovement.SetChampionActionsThisFrame(championActions);
-            championAttack.SetChampionActionsThisFrame(championActions);
+            IChampionAttack.SetChampionActionsThisFrame(championActions);
+            IChampionSpecial.SetChampionActionsThisFrame(championActions);
 
         }
     }

@@ -43,6 +43,7 @@ public class ChampionMovement : MonoBehaviour
     private bool loopOnEndBuffer;
 
     private bool isAttacking;
+    private bool isSpecialing;
     #endregion
 
     #region ANIMATOR PARAMETERS
@@ -77,7 +78,7 @@ public class ChampionMovement : MonoBehaviour
         if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause && !loopOnEndBuffer) {
             moveDir = championActionsThisFrame.moveDir;
         }
-        if (loopOnEndBuffer || loopOnPause || isAttacking) {
+        if (loopOnEndBuffer || loopOnPause || isAttacking || isSpecialing) {
             moveDir = 0f;
         }
         #endregion
@@ -250,6 +251,10 @@ public class ChampionMovement : MonoBehaviour
 
     public void IsAttacking(bool isAttacking) {
         this.isAttacking = isAttacking;
+    }
+
+    public void IsSpecialing(bool isSpecialing) {
+        this.isSpecialing = isSpecialing;
     }
 
     public void SetChampionActionsThisFrame(ChampionActions championActions) {

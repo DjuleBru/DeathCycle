@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChampionAttack : MonoBehaviour
+public class ChampionAttack : MonoBehaviour, IChampionAttack
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
 
@@ -12,11 +12,7 @@ public class ChampionAttack : MonoBehaviour
 
     private InputManager inputManager;
 
-    public event EventHandler<OnAttackEventArgs> OnAttack;
-    public class OnAttackEventArgs : EventArgs {
-        public Vector3 attackDir;
-        public int attackCount;
-    }
+    public event EventHandler<IChampionAttack.OnAttackEventArgs> OnAttack;
 
     private bool isAttacking1;
     private bool isAttacking2;
@@ -64,9 +60,9 @@ public class ChampionAttack : MonoBehaviour
     private void HandleAttacks(Vector3 attackDir) {
 
         if (rb.velocity.y != 0) {
-            // Champion is jumping
+            // Champion is not grounded
 
-                OnAttack?.Invoke(this, new OnAttackEventArgs {
+                OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                     attackDir = attackDir,
                     attackCount = 0
                 });
@@ -74,7 +70,7 @@ public class ChampionAttack : MonoBehaviour
 
         if (isAttacking2) {
 
-            OnAttack?.Invoke(this, new OnAttackEventArgs {
+            OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 3
             });
@@ -82,7 +78,7 @@ public class ChampionAttack : MonoBehaviour
 
         if (isAttacking1) {
 
-            OnAttack?.Invoke(this, new OnAttackEventArgs {
+            OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 2
             });
@@ -90,7 +86,7 @@ public class ChampionAttack : MonoBehaviour
 
         if (rb.velocity.y == 0 && !isAttacking2 && !isAttacking1) {
 
-            OnAttack?.Invoke(this, new OnAttackEventArgs {
+            OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                 attackDir = attackDir,
                 attackCount = 1
             });
@@ -132,5 +128,13 @@ public class ChampionAttack : MonoBehaviour
     }
     public void IsAttacking3(bool isAttacking3) {
         this.isAttacking3 = isAttacking3;
+    }
+
+    public  void DisableAttacks() {
+        this.enabled = false;
+    }
+
+    public void EnableAttacks() {
+        this.enabled = true;
     }
 }

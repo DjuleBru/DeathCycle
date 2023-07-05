@@ -7,16 +7,16 @@ public class ChampionWeapon : MonoBehaviour
 {
 
     private Champion champion;
-    private ChampionAttack championAttack;
+    private IChampionAttack iChampionAttack;
 
     private float attackDamage;
 
 
     private void Awake() {
         champion = GetComponent<Champion>();
-        championAttack = GetComponent<ChampionAttack>();
+        iChampionAttack = GetComponent<IChampionAttack>();
 
-        championAttack.OnAttack += ChampionAttack_OnAttack;
+        iChampionAttack.OnAttack += ChampionAttack_OnAttack;
     }
 
     private void Start() {
@@ -30,7 +30,7 @@ public class ChampionWeapon : MonoBehaviour
         }
     }
 
-    private void ChampionAttack_OnAttack(object sender, ChampionAttack.OnAttackEventArgs e) {
+    private void ChampionAttack_OnAttack(object sender, IChampionAttack.OnAttackEventArgs e) {
         GetAttackDamage(e.attackCount);
     }
 

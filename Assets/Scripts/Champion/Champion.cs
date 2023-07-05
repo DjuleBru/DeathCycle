@@ -11,7 +11,7 @@ public class Champion : MonoBehaviour {
 
     private ChampionRecPlaybackManager championRecPlaybackManager;
     private ChampionMovement championMovement;
-    private ChampionAttack championAttack;
+    private IChampionAttack IChampionAttack;
     private Rigidbody2D rb;
 
     private float championHealth;
@@ -30,7 +30,7 @@ public class Champion : MonoBehaviour {
     private void Awake() {
         championRecPlaybackManager = GetComponent<ChampionRecPlaybackManager>();
         championMovement = GetComponent<ChampionMovement>();
-        championAttack = GetComponent<ChampionAttack>();
+        IChampionAttack = GetComponent<IChampionAttack>();
         rb = GetComponent<Rigidbody2D>();
     }
     private void Start() {
@@ -69,7 +69,7 @@ public class Champion : MonoBehaviour {
 
     private void Die() {
         rb.velocity = Vector3.zero;
-        championAttack.enabled = false;
+        IChampionAttack.DisableAttacks();
         championMovement.enabled = false;
         championRecPlaybackManager.enabled = false;
 

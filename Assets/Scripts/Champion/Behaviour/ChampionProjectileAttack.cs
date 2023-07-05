@@ -12,8 +12,6 @@ public class ChampionProjectileAttack : MonoBehaviour
 
     [SerializeField] private Animator animator;
     [SerializeField] private Projectile projectile;
-    private float championAttackDamage;
-
 
     private void Awake() {
         champion = GetComponent<Champion>();
@@ -22,10 +20,8 @@ public class ChampionProjectileAttack : MonoBehaviour
     }
 
     private void Start() {
-        championAttackDamage = championSO.championAttack1Damage;
-        championAttack.OnAttack += ChampionAim_OnAttack;
     }
-
+    /*
     private void ChampionAim_OnAttack(object sender, ChampionAttack.OnAttackEventArgs e) {
             animator.SetTrigger("Attack");
             // Vector3 weaponEndPointPosition = e.weaponEndPointPosition;
@@ -35,4 +31,5 @@ public class ChampionProjectileAttack : MonoBehaviour
             // Transform bulletTransform = Instantiate(projectile.transform, weaponEndPointPosition, Quaternion.identity);
             //bulletTransform.GetComponent<Projectile>().Setup(attackDir, championAttackDamage);
     }
+    */
 }
