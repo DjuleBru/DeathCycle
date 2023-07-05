@@ -5,18 +5,21 @@ using UnityEngine;
 
 public class ChampionWeapon : MonoBehaviour
 {
+    private ChampionAttackType championAttackType = new ChampionAttackType();
 
     private Champion champion;
     private IChampionAttack iChampionAttack;
+    private IChampionSpecial iChampionSpecial;
 
     private float attackDamage;
-
 
     private void Awake() {
         champion = GetComponent<Champion>();
         iChampionAttack = GetComponent<IChampionAttack>();
+        iChampionSpecial = GetComponent<IChampionSpecial>();
 
         iChampionAttack.OnAttack += ChampionAttack_OnAttack;
+        iChampionSpecial.OnSpecial += IChampionSpecial_OnSpecial;
     }
 
     private void Start() {
@@ -31,21 +34,28 @@ public class ChampionWeapon : MonoBehaviour
     }
 
     private void ChampionAttack_OnAttack(object sender, IChampionAttack.OnAttackEventArgs e) {
-        GetAttackDamage(e.attackCount);
+        GetAttackDamage(e.attackType.ToString());
     }
 
-    private void GetAttackDamage(int attackCount) {
-        if (attackCount == 0) {
+    private void IChampionSpecial_OnSpecial(object sender, IChampionSpecial.OnSpecialEventArgs e) {
+        GetAttackDamage(e.attackType.ToString());
+    }
+
+    private void GetAttackDamage(string attackType) {
+        if (attackType == championAttackType.AIRATTACK) {
             attackDamage = champion.ChampionSO.championAirAttackDamage;
         }
-        if (attackCount == 1) {
+        if (attackType == championAttackType.ATTACK1) {
             attackDamage = champion.ChampionSO.championAttack1Damage;
         }
-        if (attackCount == 2) {
+        if (attackType == championAttackType.ATTACK2) {
             attackDamage = champion.ChampionSO.championAttack2Damage;
         }
-        if (attackCount == 3) {
+        if (attackType == championAttackType.ATTACK3) {
             attackDamage = champion.ChampionSO.championAttack3Damage;
+        }
+        if (attackType == championAttackType.SPECIALATTACK) {
+            attackDamage = champion.ChampionSO.championSpecialDamage;
         }
     }
 

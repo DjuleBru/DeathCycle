@@ -6,6 +6,7 @@ using UnityEngine;
 public class ChampionAttack : MonoBehaviour, IChampionAttack
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
+    private ChampionAttackType championAttackType = new ChampionAttackType();
 
     private Champion champion;
     private Rigidbody2D rb;
@@ -13,6 +14,9 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
     private InputManager inputManager;
 
     public event EventHandler<IChampionAttack.OnAttackEventArgs> OnAttack;
+
+    private bool isAttacking;
+    public bool IsAttacking { get { return isAttacking; } }
 
     private bool isAttacking1;
     private bool isAttacking2;
@@ -62,17 +66,17 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
         if (rb.velocity.y != 0) {
             // Champion is not grounded
 
-                OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
-                    attackDir = attackDir,
-                    attackCount = 0
-                });
+            OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
+                attackDir = attackDir,
+                attackType = championAttackType.AIRATTACK
+            });
         }
 
         if (isAttacking2) {
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                 attackDir = attackDir,
-                attackCount = 3
+                attackType = championAttackType.ATTACK3
             });
         }
 
@@ -80,7 +84,7 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                 attackDir = attackDir,
-                attackCount = 2
+                attackType = championAttackType.ATTACK2
             });
         }
 
@@ -88,7 +92,7 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
                 attackDir = attackDir,
-                attackCount = 1
+                attackType = championAttackType.ATTACK1
             });
         }
     }
@@ -118,6 +122,10 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
         isAttacking1 = false;
         isAttacking2 = false;
         isAttacking3 = false;
+    }
+
+    public void SetIsAttacking(bool isAttacking) {
+        this.isAttacking = isAttacking;
     }
 
     public void IsAttacking1(bool isAttacking1) {

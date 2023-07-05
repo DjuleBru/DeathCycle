@@ -8,10 +8,17 @@ public interface IChampionAttack {
     public event EventHandler<OnAttackEventArgs> OnAttack;
     public class OnAttackEventArgs : EventArgs {
         public Vector3 attackDir;
-        public int attackCount;
+        public string attackType;
     }
     public void SetChampionActionsThisFrame(ChampionActions championActions);
     public void ResetAttacks();
+
+    public bool IsAttacking {
+        get;
+    }
+
+    public void SetIsAttacking(bool isAttacking) {
+    }
 
     public void IsAttacking1(bool isAttacking1) {
     }

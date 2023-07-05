@@ -30,9 +30,9 @@ public class ChampionAnimationManager : MonoBehaviour
 
         #region ANIMATIONREAD
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") || this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") || this.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3")) {
-            championMovement.IsAttacking(true);
+            iChampionAttack.SetIsAttacking(true);
         } else {
-            championMovement.IsAttacking(false);
+            iChampionAttack.SetIsAttacking(false);
         }
 
         iChampionAttack.IsAttacking3(false);
@@ -40,9 +40,9 @@ public class ChampionAnimationManager : MonoBehaviour
         iChampionAttack.IsAttacking1(false);
 
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Special")) {
-            championMovement.IsSpecialing(true);
+            iChampionSpecial.SetIsSpecialing(true);
         } else {
-            championMovement.IsSpecialing(false);
+            iChampionSpecial.SetIsSpecialing(false);
         }
 
         if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("AirAttack")) {
@@ -91,21 +91,17 @@ public class ChampionAnimationManager : MonoBehaviour
 
     #region attack
     private void ChampionAttack_OnAttack(object sender, IChampionAttack.OnAttackEventArgs e) {
-        if (e.attackCount == 0) {
-            animator.SetTrigger("AirAttack");
-        }
-        if (e.attackCount == 1) {
-            animator.SetTrigger("Attack1");
+        animator.SetTrigger(e.attackType);
+
+        if (e.attackType == "Attack1") {
             animator.SetBool("WillAttack2", false);
             animator.SetBool("WillAttack3", false);
         }
-        if (e.attackCount == 2) {
-            animator.SetTrigger("Attack2");
+        if (e.attackType == "Attack2") {
             animator.SetBool("WillAttack2", true);
             animator.SetBool("WillAttack3", false);
         }
-        if (e.attackCount == 3) {
-            animator.SetTrigger("Attack3");
+        if (e.attackType == "Attack3") {
             animator.SetBool("WillAttack3", true);
             animator.SetBool("WillAttack2", false);
         }

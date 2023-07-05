@@ -17,6 +17,9 @@ public class ChampionMovement : MonoBehaviour
     private Champion champion;
     private Rigidbody2D rb;
 
+    private IChampionSpecial iChampionSpecial;
+    private IChampionAttack iChampionAttack;
+
     #region CHECK PARAMETERS
     [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private Vector2 _groundCheckSize = new Vector2(0.49f, 0.03f);
@@ -57,6 +60,8 @@ public class ChampionMovement : MonoBehaviour
         inputManager = FindObjectOfType<InputManager>();
         rb = GetComponent<Rigidbody2D>();
         champion = GetComponent<Champion>();
+        iChampionSpecial = GetComponent<IChampionSpecial>();
+        iChampionAttack = GetComponent<IChampionAttack>();
         championSO = champion.ChampionSO;
 
         inputManager.OnJumpPressed += InputManager_OnJumpPressed;
@@ -78,7 +83,7 @@ public class ChampionMovement : MonoBehaviour
         if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause && !loopOnEndBuffer) {
             moveDir = championActionsThisFrame.moveDir;
         }
-        if (loopOnEndBuffer || loopOnPause || isAttacking || isSpecialing) {
+        if (loopOnEndBuffer || loopOnPause || iChampionAttack.IsAttacking || iChampionSpecial.IsSpecialing) {
             moveDir = 0f;
         }
         #endregion
@@ -123,7 +128,7 @@ public class ChampionMovement : MonoBehaviour
 
         #region JUMP
 
-        if (lastGroundedTime > 0 && lastPressedJumpTime > 0 && !isJumping && !isAttacking) {
+        if (lastGroundedTime > 0 && lastPressedJumpTime > 0 && !isJumping && !iChampionAttack.IsAttacking && !iChampionSpecial.IsSpecialing) {
             Jump();
         }
 

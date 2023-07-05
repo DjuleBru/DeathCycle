@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IChampionSpecial {
+    public bool IsSpecialing { get; }
 
     public event EventHandler<OnSpecialEventArgs> OnSpecial;
     public class OnSpecialEventArgs : EventArgs {
         public Vector3 specialDir;
+        public string attackType;
     }
     public void SetChampionActionsThisFrame(ChampionActions championActions) {
 
@@ -16,7 +18,7 @@ public interface IChampionSpecial {
 
     }
 
-    public void IsSpecialing(bool isSpecialing) {
+    public void SetIsSpecialing(bool isSpecialing) {
     }
 
     public void DisableSpecial() {

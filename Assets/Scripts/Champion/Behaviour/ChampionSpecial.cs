@@ -6,6 +6,8 @@ using UnityEngine;
 public class ChampionSpecial : MonoBehaviour, IChampionSpecial
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
+    private ChampionAttackType championAttackType = new ChampionAttackType();
+
     private InputManager inputManager;
     private Champion champion;
     private Rigidbody2D rb;
@@ -13,6 +15,8 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
     public event EventHandler<IChampionSpecial.OnSpecialEventArgs> OnSpecial;
 
     private bool isSpecialing;
+
+    public bool IsSpecialing { get { return isSpecialing; } }
 
     private bool loopOnPause;
     private bool loopOnRecording;
@@ -44,7 +48,8 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
 
         if (rb.velocity.y == 0 && !isSpecialing) {
             OnSpecial?.Invoke(this, new IChampionSpecial.OnSpecialEventArgs {
-                specialDir = specialDir
+                specialDir = specialDir,
+                attackType = championAttackType.SPECIALATTACK
             });
         }
     }
@@ -84,7 +89,7 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
         isSpecialing = false;
     }
 
-    public void IsSpecialing(bool isSpecialing) {
+    public void SetIsSpecialing(bool isSpecialing) {
         this.isSpecialing = isSpecialing;
     }
 
