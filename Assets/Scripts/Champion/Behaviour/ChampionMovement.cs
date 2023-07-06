@@ -51,7 +51,10 @@ public class ChampionMovement : MonoBehaviour
 
     #region ANIMATOR PARAMETERS
     private float moveDir;
+    private float moveInput;
     public float MoveDir { get { return moveDir; } }
+    public float MoveInput { get { return moveInput; } }
+    public bool IsGrounded { get { return isGrounded; } }
 
     #endregion
 
@@ -78,7 +81,8 @@ public class ChampionMovement : MonoBehaviour
 
         #region INPUTHANDLER
         if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-            moveDir = inputManager.GetMoveInput();
+            moveInput = inputManager.GetMoveInput();
+            moveDir = moveInput;
         }
         if ((loopOnPlaybacking || LoopManager.Instance.LoopNumber != champion.SpawnedLoopNumber) && !loopOnPause && !loopOnEndBuffer) {
             moveDir = championActionsThisFrame.moveDir;
@@ -89,11 +93,12 @@ public class ChampionMovement : MonoBehaviour
         #endregion
 
         #region COLLISION CHECKS
-        if (!isJumping) {
-            // Grounded check
-            if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer)) {
-                lastGroundedTime = championSO.jumpCoyoteTime;
-            }
+        // Grounded check
+        if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer)) {
+            lastGroundedTime = championSO.jumpCoyoteTime;
+            isGrounded = true;
+        } else {
+            isGrounded = false;
         }
         #endregion
 

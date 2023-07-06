@@ -28,7 +28,9 @@ public class ChampionWeapon : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collider) {
 
         if (collider.tag == "Champion") {
-            collider.gameObject.GetComponent<KnockbackFeedback>().MeleeKnockback(this.gameObject);
+            if (collider.gameObject.GetComponent<KnockbackFeedback>() != null) {
+                collider.gameObject.GetComponent<KnockbackFeedback>().MeleeKnockback(this.gameObject);
+            }
             collider.gameObject.GetComponent<Champion>().ReceiveDamage(attackDamage);
         }
     }

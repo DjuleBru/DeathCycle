@@ -7,6 +7,8 @@ public class ObjectPool : MonoBehaviour {
 
     [SerializeField] GameObject champion;
     [SerializeField] Transform[] spawnPoints;
+    [SerializeField] Player player;
+
     private GameObject[] pool;
 
     private int poolSize = 5;
@@ -41,16 +43,18 @@ public class ObjectPool : MonoBehaviour {
 
         for (int i = 0; i < poolSize; i++) {
             pool[i] = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity);
+            pool[i].GetComponent<Champion>().SetObjectPoolParent(this);
             pool[i].SetActive(false);
         }
     }
 
     private void ResetPool() {
-        // Reset champion positions to spawn points, reset direction, reset health, reset velocity to zero
+        // Reset champion positions to spawn points, reset direction, reset health, reset velocity to zero, remove flag children
         for (int i = 0; i < poolSize; i++) {
             pool[i].transform.position = spawnPoints[i].transform.position;
             pool[i].transform.localScale = Vector3.one;
             pool[i].GetComponent<Champion>().ResetChampionHealth();
+            pool[i].GetComponent<Champion>().RemoveFlagChildren();
             pool[i].GetComponent<IChampionAttack>().ResetAttacks();
             pool[i].GetComponent<Animator>().Play("Idle");
             pool[i].GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
@@ -74,5 +78,9 @@ public class ObjectPool : MonoBehaviour {
             pool[i].GetComponent<ChampionMovement>().enabled = false;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = false;
         }
+    }
+
+    public Player GetPlayer() {
+        return player;
     }
 }

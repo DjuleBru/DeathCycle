@@ -8,17 +8,20 @@ public class Champion : MonoBehaviour {
 
     [SerializeField] private ChampionSO championSO;
     [SerializeField] private ParticleSystem bloodPS;
+    [SerializeField] private Transform scoreFlagHoldPoint;
 
+    private ObjectPool objectPoolParent;
     private ChampionRecPlaybackManager championRecPlaybackManager;
     private ChampionMovement championMovement;
     private IChampionAttack IChampionAttack;
+    private Collider2D championCollider;
     private Rigidbody2D rb;
 
     private float championHealth;
-
     private int spawnedLoopNumber;
-    public int SpawnedLoopNumber { get { return spawnedLoopNumber; } }
-    public ChampionSO ChampionSO { get { return championSO; } }
+
+    private ScoreFlag scoreFlag;
+    private int flagScore = 1;
 
     public event EventHandler<OnDamageReceivedEventArgs> OnDamageReceived;
     public event EventHandler OnDeath;
@@ -27,18 +30,18 @@ public class Champion : MonoBehaviour {
         public float championHealth;
     }
 
+    public int SpawnedLoopNumber { get { return spawnedLoopNumber; } }
+    public ChampionSO ChampionSO { get { return championSO; } }
+
     private void Awake() {
         championRecPlaybackManager = GetComponent<ChampionRecPlaybackManager>();
         championMovement = GetComponent<ChampionMovement>();
         IChampionAttack = GetComponent<IChampionAttack>();
         rb = GetComponent<Rigidbody2D>();
+        championCollider = GetComponent<Collider2D>();
     }
     private void Start() {
         ResetChampionHealth();
-    }
-
-    public void SetSpawnedLoopNumber(int spawnedLoopNumber) {
-        this.spawnedLoopNumber = spawnedLoopNumber;
     }
 
     /*
@@ -50,6 +53,33 @@ public class Champion : MonoBehaviour {
         }
     }
     */
+
+    private void OnTriggerEnter2D(Collider2D collider) {
+        HandleScoreFlag(collider);
+    }
+
+    private void HandleScoreFlag(Collider2D collider) {
+        if (collider.tag == "ScoreFlag") {
+            ScoreFlag scoreFlag = collider.GetComponent<ScoreFlag>();
+            scoreFlag.SetScoreFlagParent(this);
+            scoreFlag.transform.position = scoreFlagHoldPoint.position;
+            this.scoreFlag = scoreFlag;
+        }
+
+        if (collider.tag == "ScoreZone" && scoreFlag != null) {
+            scoreFlag.RemoveScoreFlagParent();
+            scoreFlag.DisableScoreFlag();
+            scoreFlag.ResetScoreFlagPosition();
+            RemoveFlagChildren();
+            objectPoolParent.GetPlayer().increaseScore(flagScore);
+        }
+
+    }
+
+    public void SetSpawnedLoopNumber(int spawnedLoopNumber) {
+        this.spawnedLoopNumber = spawnedLoopNumber;
+    }
+
     public void ReceiveDamage(float incomingDamage) {
 
         if (championHealth > 0) {
@@ -69,9 +99,16 @@ public class Champion : MonoBehaviour {
 
     private void Die() {
         rb.velocity = Vector3.zero;
+
         IChampionAttack.DisableAttacks();
         championMovement.enabled = false;
         championRecPlaybackManager.enabled = false;
+        championCollider.enabled = false;
+
+        if (scoreFlag != null) {
+            scoreFlag.RemoveScoreFlagParent();
+            RemoveFlagChildren();
+        }
 
         OnDeath?.Invoke(this, EventArgs.Empty);
     }
@@ -82,5 +119,15 @@ public class Champion : MonoBehaviour {
 
     public float GetChampionHealth() {
         return championHealth;
+    }
+
+    public void SetObjectPoolParent(ObjectPool objectPool) {
+        objectPoolParent = objectPool;
+    }
+
+    public void RemoveFlagChildren() {
+        if (scoreFlag != null) {
+            scoreFlag = null;
+        }
     }
 }

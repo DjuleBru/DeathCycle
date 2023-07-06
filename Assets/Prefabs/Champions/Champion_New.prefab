@@ -72,12 +72,11 @@ GameObject:
   - component: {fileID: 880949846306087878}
   - component: {fileID: 880949846306087884}
   - component: {fileID: 625499891}
-  - component: {fileID: 2722481171309371212}
   - component: {fileID: 4589474696629757798}
   - component: {fileID: 5762862441689706433}
   - component: {fileID: 4619220366178307659}
   - component: {fileID: 6944797275793690409}
-  - component: {fileID: 8491445840502898090}
+  - component: {fileID: 7944991082955175831}
   m_Layer: 7
   m_Name: Champion_New
   m_TagString: Champion
@@ -104,6 +103,7 @@ Transform:
   - {fileID: 8635038948974247810}
   - {fileID: 2742108355626384286}
   - {fileID: 5885416494751670808}
+  - {fileID: 5218262189808157084}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -190,19 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   championSO: {fileID: 11400000, guid: fc7096f970f0b5f4cb0473d7ad5543f4, type: 2}
   bloodPS: {fileID: 1564538105789565348, guid: 91e8ffda34a3118478da24103b994148, type: 3}
---- !u!114 &2722481171309371212
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 880949846306087877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afa7ed36461c6a942a0205c126b985b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  knockbackStrength: 2
+  scoreFlagHoldPoint: {fileID: 5218262189808157084}
 --- !u!114 &4589474696629757798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9559d4f047eb6cb4090758172e8dd885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8491445840502898090
+--- !u!114 &7944991082955175831
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -269,15 +257,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 880949846306087877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c8ad71cbd67d0f4b939182fa44d9c60, type: 3}
+  m_Script: {fileID: 11500000, guid: 629b6cc7b9641244e91bc7fa677e5c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponCollider: {fileID: 2426404426864469044}
-  attackPos: {fileID: 2742108355626384286}
-  attackRange: 0
-  championLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!1 &880949846781685055
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,6 +521,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2829549656490433364
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5218262189808157084}
+  m_Layer: 7
+  m_Name: ScoreFlagHoldPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5218262189808157084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2829549656490433364}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.06, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 880949846306087882}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2943960777422849623
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,8 +769,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -723268039
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 222480884, guid: 01da5e0a847bfeb4a9c9e581e78d5ae1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

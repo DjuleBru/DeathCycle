@@ -11,6 +11,8 @@ public class ChampionAnimationManager : MonoBehaviour
     private IChampionSpecial iChampionSpecial;
     private Champion champion;
 
+    [SerializeField] private float jumpTopSpeedBuffer = 0.2f;
+
     private void Awake() {
         rb = GetComponentInParent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -69,15 +71,29 @@ public class ChampionAnimationManager : MonoBehaviour
         } else {
             animator.SetBool("IsRunning", false);
         }
+
+        // Cancel attack combo if moveInput != 0
+        if (championMovement.MoveInput != 0) {
+            animator.ResetTrigger("Attack2");
+            animator.ResetTrigger("Attack3");
+            animator.SetBool("WillAttack2", false);
+            animator.SetBool("WillAttack3", false);
+        }
         #endregion
 
         #region JUMP
-        if (rb.velocity.y > 0) {
+        if (rb.velocity.y < jumpTopSpeedBuffer && rb.velocity.y > -jumpTopSpeedBuffer && !championMovement.IsGrounded) {
+            animator.SetBool("JumpingTop", true);
+        } else {
+            animator.SetBool("JumpingTop", false);
+        }
+
+        if (rb.velocity.y >= jumpTopSpeedBuffer) {
             animator.SetBool("JumpingUp", true);
         } else {
             animator.SetBool("JumpingUp", false);
         }
-        if (rb.velocity.y < 0) {
+        if (rb.velocity.y <= -jumpTopSpeedBuffer) {
             animator.SetBool("JumpingDown", true);
         } else {
             animator.SetBool("JumpingDown", false);
@@ -89,7 +105,7 @@ public class ChampionAnimationManager : MonoBehaviour
         #endregion
     }
 
-    #region attack
+    #region ATTACK
     private void ChampionAttack_OnAttack(object sender, IChampionAttack.OnAttackEventArgs e) {
         animator.SetTrigger(e.attackType);
 

@@ -44,7 +44,7 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
             Vector3 attackDir = mousePosition - transform.position;
 
             if (championActionsThisFrame.AttackPressed == true) {
-                HandleAttacks(attackDir);
+                HandleAttacks();
             }
         }
         #endregion
@@ -52,22 +52,17 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
 
     private void InputManager_OnAttackPressed(object sender, EventArgs e) {
         if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
-
-            Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
-            Vector3 attackDir = mousePosition - transform.position;
-
-            HandleAttacks(attackDir);
+            HandleAttacks();
         }
 
     }
 
-    private void HandleAttacks(Vector3 attackDir) {
+    private void HandleAttacks() {
 
         if (rb.velocity.y != 0) {
             // Champion is not grounded
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
-                attackDir = attackDir,
                 attackType = championAttackType.AIRATTACK
             });
         }
@@ -75,7 +70,6 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
         if (isAttacking2) {
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
-                attackDir = attackDir,
                 attackType = championAttackType.ATTACK3
             });
         }
@@ -83,15 +77,14 @@ public class ChampionAttack : MonoBehaviour, IChampionAttack
         if (isAttacking1) {
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
-                attackDir = attackDir,
                 attackType = championAttackType.ATTACK2
             });
         }
 
         if (rb.velocity.y == 0 && !isAttacking2 && !isAttacking1) {
+            // Champion is grounded
 
             OnAttack?.Invoke(this, new IChampionAttack.OnAttackEventArgs {
-                attackDir = attackDir,
                 attackType = championAttackType.ATTACK1
             });
         }
