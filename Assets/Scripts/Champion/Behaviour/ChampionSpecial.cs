@@ -13,6 +13,7 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
     private Rigidbody2D rb;
 
     public event EventHandler<IChampionSpecial.OnSpecialEventArgs> OnSpecial;
+    public event EventHandler OnSpecialLackingMana;
 
     private bool isSpecialing;
 
@@ -58,6 +59,9 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
                     specialDir = specialDir,
                     attackType = championAttackType.SPECIALATTACK
                 });
+            } else {
+                // Champion does not have enough mana
+                OnSpecialLackingMana?.Invoke(this, EventArgs.Empty);
             }
         }
     }

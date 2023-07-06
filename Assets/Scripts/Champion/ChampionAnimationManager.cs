@@ -23,10 +23,10 @@ public class ChampionAnimationManager : MonoBehaviour
 
         iChampionAttack.OnAttack += ChampionAttack_OnAttack;
         iChampionSpecial.OnSpecial += IChampionSpecial_OnSpecial;
+        iChampionSpecial.OnSpecialLackingMana += IChampionSpecial_OnSpecialLackingMana;
         champion.OnDamageReceived += Champion_OnDamageReceived;
         champion.OnDeath += Champion_OnDeath;
     }
-
 
     private void Update() {
 
@@ -41,7 +41,7 @@ public class ChampionAnimationManager : MonoBehaviour
         iChampionAttack.IsAttacking2(false);
         iChampionAttack.IsAttacking1(false);
 
-        if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Special")) {
+        if (this.animator.GetCurrentAnimatorStateInfo(0).IsName("Special") || this.animator.GetCurrentAnimatorStateInfo(0).IsName("SpecialLackingMana")) {
             iChampionSpecial.SetIsSpecialing(true);
         } else {
             iChampionSpecial.SetIsSpecialing(false);
@@ -127,6 +127,9 @@ public class ChampionAnimationManager : MonoBehaviour
     #region SPECIAL 
     private void IChampionSpecial_OnSpecial(object sender, IChampionSpecial.OnSpecialEventArgs e) {
         animator.SetTrigger("Special");
+    }
+    private void IChampionSpecial_OnSpecialLackingMana(object sender, System.EventArgs e) {
+        animator.SetTrigger("SpecialLackingMana");
     }
     #endregion
 

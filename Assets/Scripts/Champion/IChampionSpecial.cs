@@ -7,6 +7,7 @@ public interface IChampionSpecial {
     public bool IsSpecialing { get; }
 
     public event EventHandler<OnSpecialEventArgs> OnSpecial;
+    public event EventHandler OnSpecialLackingMana;
     public class OnSpecialEventArgs : EventArgs {
         public Vector3 specialDir;
         public string attackType;
