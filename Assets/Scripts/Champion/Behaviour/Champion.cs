@@ -23,6 +23,7 @@ public class Champion : MonoBehaviour {
     private ScoreFlag scoreFlag;
     private int flagScore = 1;
     private int manaOrbValue = 1;
+    private int playerMaxMana = 5;
 
     public event EventHandler<OnDamageReceivedEventArgs> OnDamageReceived;
     public event EventHandler OnDeath;
@@ -67,8 +68,12 @@ public class Champion : MonoBehaviour {
     }
 
     private void HandleManaOrb(Collider2D collider) {
-        collider.GetComponent<ManaOrb>().DisableManaOrb();
-        objectPoolParent.GetPlayer().IncreaseMana(manaOrbValue);
+        if (objectPoolParent.GetPlayer().PlayerMana <= playerMaxMana) {
+            // Player has mana slots left
+
+            collider.GetComponent<ManaOrb>().DisableManaOrb();
+            objectPoolParent.GetPlayer().IncreaseMana(manaOrbValue);
+        }
     }
 
     private void HandleScoreFlag(Collider2D collider) {
