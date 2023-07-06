@@ -32,3 +32,4 @@ MonoBehaviour:
   championAttack3Damage: 15
   championAttackMaxRate: 0.5
   championSpecialDamage: 20
+  specialManaCost: 1

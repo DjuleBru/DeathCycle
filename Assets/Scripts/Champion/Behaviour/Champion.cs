@@ -22,6 +22,7 @@ public class Champion : MonoBehaviour {
 
     private ScoreFlag scoreFlag;
     private int flagScore = 1;
+    private int manaOrbValue = 1;
 
     public event EventHandler<OnDamageReceivedEventArgs> OnDamageReceived;
     public event EventHandler OnDeath;
@@ -44,36 +45,45 @@ public class Champion : MonoBehaviour {
         ResetChampionHealth();
     }
 
-    /*
     private void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.tag == "ScoreFlag") {
+            HandleScoreFlag(collider);
+        }
+
+        if (collider.tag == "ScoreZone" && scoreFlag != null) {
+            HandleScore();
+        }
+
+        if (collider.tag == "ManaOrb") {
+            HandleManaOrb(collider);
+        }
+
         if (collider.tag == "Projectile") {
             Projectile incomingProjectile = collider.GetComponent<Projectile>();
             float incomingDamage = incomingProjectile.ProjectileDamage;
             ReceiveDamage(incomingDamage);
         }
-    }
-    */
 
-    private void OnTriggerEnter2D(Collider2D collider) {
-        HandleScoreFlag(collider);
+    }
+
+    private void HandleManaOrb(Collider2D collider) {
+        collider.GetComponent<ManaOrb>().DisableManaOrb();
+        objectPoolParent.GetPlayer().IncreaseMana(manaOrbValue);
     }
 
     private void HandleScoreFlag(Collider2D collider) {
-        if (collider.tag == "ScoreFlag") {
-            ScoreFlag scoreFlag = collider.GetComponent<ScoreFlag>();
-            scoreFlag.SetScoreFlagParent(this);
-            scoreFlag.transform.position = scoreFlagHoldPoint.position;
-            this.scoreFlag = scoreFlag;
-        }
+        ScoreFlag scoreFlag = collider.GetComponent<ScoreFlag>();
+        scoreFlag.SetScoreFlagParent(this);
+        scoreFlag.transform.position = scoreFlagHoldPoint.position;
+        this.scoreFlag = scoreFlag;
+    }
 
-        if (collider.tag == "ScoreZone" && scoreFlag != null) {
-            scoreFlag.RemoveScoreFlagParent();
-            scoreFlag.DisableScoreFlag();
-            scoreFlag.ResetScoreFlagPosition();
-            RemoveFlagChildren();
-            objectPoolParent.GetPlayer().increaseScore(flagScore);
-        }
-
+    private void HandleScore() {
+        scoreFlag.RemoveScoreFlagParent();
+        scoreFlag.DisableScoreFlag();
+        scoreFlag.ResetScoreFlagPosition();
+        RemoveFlagChildren();
+        objectPoolParent.GetPlayer().IncreaseScore(flagScore);
     }
 
     public void SetSpawnedLoopNumber(int spawnedLoopNumber) {
@@ -119,6 +129,10 @@ public class Champion : MonoBehaviour {
 
     public float GetChampionHealth() {
         return championHealth;
+    }
+
+    public ObjectPool GetObjectPoolParent() {
+        return objectPoolParent;
     }
 
     public void SetObjectPoolParent(ObjectPool objectPool) {

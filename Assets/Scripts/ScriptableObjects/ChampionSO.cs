@@ -34,4 +34,8 @@ public class ChampionSO : ScriptableObject
     public float championSpecialDamage;
     #endregion
 
+    #region OTHER PARAMETERS
+    public int specialManaCost;
+    #endregion
+
 }

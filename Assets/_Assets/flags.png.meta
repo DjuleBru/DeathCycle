@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a64137f7f96c6444097f030f47cd7be3
+guid: 088ae06ddc812fb47a8c780216095eb1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Heart&ManaUi_0
+      name: flags_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 38
-        width: 16
-        height: 10
+        x: 0
+        y: 85
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c399fd204aa8173438bf5d0edd27e1bd
-      internalID: 1716154066
+      spriteID: e06fc63ef9c241a49bb117a91874eebc
+      internalID: -225616195
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heart&ManaUi_1
+      name: flags_1
       rect:
         serializedVersion: 2
-        x: 21
-        y: 39
-        width: 11
-        height: 9
+        x: 61
+        y: 85
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,20 +152,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d64e7947585584e41aff8e485b57779d
-      internalID: -497082708
+      spriteID: e63016b4f32a5e544ba57983b2cad195
+      internalID: 1073019014
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heart&ManaUi_2
+      name: flags_2
       rect:
         serializedVersion: 2
-        x: 33
-        y: 39
-        width: 11
-        height: 9
+        x: 122
+        y: 85
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8591b592701df9e44857502ba75c5427
-      internalID: -692454159
+      spriteID: 77554ade7c64def428ce88d8151ae383
+      internalID: 984003735
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heart&ManaUi_3
+      name: flags_3
       rect:
         serializedVersion: 2
-        x: 21
-        y: 28
-        width: 10
-        height: 9
+        x: 183
+        y: 85
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,20 +194,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d169101cdbccdf429d93fc0002ec2d0
-      internalID: -1644986279
+      spriteID: 1d80e0b8abd753d48aa149d78c998576
+      internalID: 1001117823
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heart&ManaUi_4
+      name: flags_4
       rect:
         serializedVersion: 2
-        x: 33
-        y: 28
-        width: 10
-        height: 9
+        x: 0
+        y: 0
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -215,20 +215,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bcd9d64b3f5fac0419edad2b329989a4
-      internalID: -809190054
+      spriteID: 4e6b242ad45ff384abb5a430b556aa25
+      internalID: 1150866408
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heart&ManaUi_5
+      name: flags_5
       rect:
         serializedVersion: 2
-        x: 2
-        y: 14
-        width: 16
-        height: 10
+        x: 61
+        y: 0
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,20 +236,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 578a4615b28eccc4088e13d766feef5a
-      internalID: -250851188
+      spriteID: 13d8eb00feadb0745a8eaf0a60f3d897
+      internalID: -1985707899
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Heart&ManaUi_6
+      name: flags_6
       rect:
         serializedVersion: 2
-        x: 21
-        y: 14
-        width: 11
-        height: 10
+        x: 122
+        y: 0
+        width: 61
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,71 +257,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7891a7841043e084e8f19423e5869f92
-      internalID: 592205106
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Heart&ManaUi_7
-      rect:
-        serializedVersion: 2
-        x: 33
-        y: 14
-        width: 11
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3e92badfd1a0031429c4c7f7856db2ca
-      internalID: -56409448
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Heart&ManaUi_8
-      rect:
-        serializedVersion: 2
-        x: 21
-        y: 2
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 105f445e582fd214e8d330c61dd8875d
-      internalID: -1079317377
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Heart&ManaUi_9
-      rect:
-        serializedVersion: 2
-        x: 33
-        y: 2
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d79d84f5fa859b14f89373e53849d9be
-      internalID: -1541544770
+      spriteID: aabaacefc68d8aa4e9b1a9c8c2ea4afd
+      internalID: -121441308
       vertices: []
       indices: 
       edges: []
@@ -337,16 +274,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Heart&ManaUi_0: 1716154066
-      Heart&ManaUi_1: -497082708
-      Heart&ManaUi_2: -692454159
-      Heart&ManaUi_3: -1644986279
-      Heart&ManaUi_4: -809190054
-      Heart&ManaUi_5: -250851188
-      Heart&ManaUi_6: 592205106
-      Heart&ManaUi_7: -56409448
-      Heart&ManaUi_8: -1079317377
-      Heart&ManaUi_9: -1541544770
+      flags_0: -225616195
+      flags_1: 1073019014
+      flags_2: 984003735
+      flags_3: 1001117823
+      flags_4: 1150866408
+      flags_5: -1985707899
+      flags_6: -121441308
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -47,10 +47,18 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
     private void HandleSpecial(Vector3 specialDir) {
 
         if (rb.velocity.y == 0 && !isSpecialing) {
-            OnSpecial?.Invoke(this, new IChampionSpecial.OnSpecialEventArgs {
-                specialDir = specialDir,
-                attackType = championAttackType.SPECIALATTACK
-            });
+            // Champion is grounded and not already doing special action
+
+            if(champion.GetObjectPoolParent().GetPlayer().PlayerMana >= champion.ChampionSO.specialManaCost) {
+                // Champion has enough mana to cast special
+
+                champion.GetObjectPoolParent().GetPlayer().DecreaseMana(champion.ChampionSO.specialManaCost);
+
+                OnSpecial?.Invoke(this, new IChampionSpecial.OnSpecialEventArgs {
+                    specialDir = specialDir,
+                    attackType = championAttackType.SPECIALATTACK
+                });
+            }
         }
     }
 

@@ -10,7 +10,7 @@ public class ScoreFlag : MonoBehaviour
     private Champion championParent;
 
     private void Awake() {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         boxCollider = GetComponent<BoxCollider2D>();
         initialPosition = transform.position;
     }
