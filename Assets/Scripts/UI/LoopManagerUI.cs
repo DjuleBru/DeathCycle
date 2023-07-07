@@ -99,12 +99,8 @@ public class LoopManagerUI : MonoBehaviour
             pauseCountDownText.text = Math.Ceiling(loopOnPauseTimer).ToString();
             loopOnPauseTimer -= Time.deltaTime;
         }
-        if (loopOnRecording) {
-            recplayCountDownText.text = "Recording " + Math.Ceiling(loopTimer).ToString();
-            loopTimer -= Time.deltaTime;
-        }
-        if (loopOnPlaybacking) {
-            recplayCountDownText.text = "Playback " + Math.Ceiling(loopTimer).ToString();
+        if (loopOnRecording || loopOnPlaybacking) {
+            recplayCountDownText.text = Math.Ceiling(loopTimer).ToString();
             loopTimer -= Time.deltaTime;
         }
     }

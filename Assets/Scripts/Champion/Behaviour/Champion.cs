@@ -46,6 +46,10 @@ public class Champion : MonoBehaviour {
         ResetChampionHealth();
     }
 
+    private void Update() {
+        KeepScoreFlagOnHoldPoint();
+    }
+
     private void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "ScoreFlag") {
             HandleScoreFlag(collider);
@@ -89,6 +93,13 @@ public class Champion : MonoBehaviour {
         scoreFlag.ResetScoreFlagPosition();
         RemoveFlagChildren();
         objectPoolParent.GetPlayer().IncreaseScore(flagScore);
+    }
+
+    private void KeepScoreFlagOnHoldPoint() {
+        if (scoreFlag != null) {
+            scoreFlag.transform.position = scoreFlagHoldPoint.position;
+            scoreFlag.transform.rotation = scoreFlagHoldPoint.rotation;
+        }
     }
 
     public void SetSpawnedLoopNumber(int spawnedLoopNumber) {
