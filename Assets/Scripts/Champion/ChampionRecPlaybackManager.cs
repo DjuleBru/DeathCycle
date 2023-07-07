@@ -80,7 +80,7 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
                 SpecialReleased = championActions.SpecialReleased,
             };
 
-        Debug.Log("loopIndex " + recordingLoopIndex + " time " + loopTimer + " " + championActionsRecord[recordingLoopIndex].AttackPressed);
+       // Debug.Log("loopIndex " + recordingLoopIndex + " time " + loopTimer + " " + championActionsRecord[recordingLoopIndex].AttackPressed);
         
         recordingLoopIndex++;
 
@@ -91,20 +91,12 @@ public class ChampionRecPlaybackManager : MonoBehaviour {
 
             championActions = championActionsRecord[playbackLoopIndex];
 
-            while (championActions.actionTimeInLoop <=  loopTimer) {
-                playbackLoopIndex++;
-
-                if (playbackLoopIndex < championActionsRecord.Count) {
-                    championActions = championActionsRecord[playbackLoopIndex];
-                } else { return; }
-            }
-
-            Debug.Log("loopIndex " + playbackLoopIndex + " time " + loopTimer + " " + championActionsRecord[playbackLoopIndex].AttackPressed);
+            // Debug.Log("loopIndex " + playbackLoopIndex + " time " + loopTimer + " " + championActionsRecord[playbackLoopIndex].AttackPressed);
 
             championMovement.SetChampionActionsThisFrame(championActions);
             IChampionAttack.SetChampionActionsThisFrame(championActions);
             IChampionSpecial.SetChampionActionsThisFrame(championActions);
-
+            playbackLoopIndex++;
         }
     }
 }

@@ -25,9 +25,9 @@ public class LoopManager : MonoBehaviour {
 
     private State state;
 
-    [SerializeField] private float loopPauseTime = 0.1f;
-    [SerializeField] private float loopTime = 3f;
-    [SerializeField] private float loopEndBufferTime = 2f;
+    [SerializeField] private float loopPauseTime;
+    [SerializeField] private float loopTime;
+    [SerializeField] private float loopEndBufferTime;
 
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
@@ -52,9 +52,17 @@ public class LoopManager : MonoBehaviour {
     }
 
     private void Update() {
-
         switch (state) {
             case State.Pause:
+
+                if (loopPauseTimer == 0 && loopNumber == 0) {
+                    // Sending pause event for initialisation in every other class that uses this info
+
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                }
 
                 if (loopPauseTimer <= loopPauseTime) {
                     loopPauseTimer += Time.deltaTime;
