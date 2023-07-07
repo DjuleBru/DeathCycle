@@ -29,21 +29,6 @@ public class LoopManagerUI : MonoBehaviour
 
         loopOnPauseTime = LoopManager.Instance.LoopPauseTime;
         loopTime = LoopManager.Instance.LoopTime;
-
-        // Initial config : State = Pause
-        loopOnPause = true;
-        loopOnRecording = false;
-        loopOnPlaybacking = false;
-        loopOnPauseTimer = loopOnPauseTime;
-
-        RecordingImage.gameObject.SetActive(false);
-        PlaybackImage.gameObject.SetActive(false);
-
-        recplayCountDownText.gameObject.SetActive(false);
-        LoopNumberText.gameObject.SetActive(true);
-        pauseCountDownText.gameObject.SetActive(true);
-
-        LoopNumberText.text = "Loop " + loopNumberDisplayed;
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
