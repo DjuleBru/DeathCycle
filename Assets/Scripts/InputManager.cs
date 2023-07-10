@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnSpecialPressed;
     public event EventHandler OnSpecialReleased;
 
+    public event EventHandler OnInteractHeld;
+
     private InputSystem inputSystem;
 
     private Camera mainCamera;
@@ -23,11 +25,15 @@ public class InputManager : MonoBehaviour
         inputSystem.Player.Enable();
         inputSystem.Player.Jump.started+= Jump_performed;
         inputSystem.Player.Jump.canceled += Jump_released;
-        inputSystem.Player.Attack.started += Attack_performed;
+        inputSystem.Player.Attack.started += Attack_started;
         inputSystem.Player.Attack.canceled += Attack_canceled;
         inputSystem.Player.Special.started += Special_started;
         inputSystem.Player.Special.canceled += Special_canceled;
+
+        inputSystem.Player.Attack.performed += Interact_held;
     }
+
+
 
     private void Special_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnSpecialReleased?.Invoke(this, EventArgs.Empty);
@@ -41,7 +47,7 @@ public class InputManager : MonoBehaviour
         OnAttackReleased?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Attack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+    private void Attack_started(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnAttackPressed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -51,6 +57,9 @@ public class InputManager : MonoBehaviour
 
     private void Jump_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnJumpPressed?.Invoke(this, EventArgs.Empty);
+    }
+    private void Interact_held(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnInteractHeld?.Invoke(this, EventArgs.Empty);
     }
 
     public float GetMoveInput() {

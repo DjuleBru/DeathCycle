@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c249de9f0f408454892751c84da20275, type: 3}
+  m_Name: WaterPriestess
+  m_EditorClassIdentifier: 
+  Champion: {fileID: 8088354660951978602, guid: b0f6737a12a37c74fbf382d10b37ab7b, type: 3}
+  moveSpeed: 1.6
+  velPower: 0.9
+  acceleration: 5
+  deceleration: 8
+  frictionAmount: 0.4
+  jumpForce: 6.75
+  jumpCoyoteTime: 0.1
+  jumpInputBufferTime: 0.1
+  jumpCutMultiplier: 0.5
+  gravityScale: 1
+  jumpCutGravityMult: 1.3
+  maxFallSpeed: 18
+  championMaxHealth: 30
+  championAirAttackDamage: 10
+  championAttack1Damage: 5
+  championAttack2Damage: 5
+  championAttack3Damage: 10
+  championAttackMaxRate: 0.5
+  championSpecialDamage: 20
+  specialManaCost: 2

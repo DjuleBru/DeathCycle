@@ -129,7 +129,6 @@ public class Champion : MonoBehaviour {
         IChampionAttack.DisableAttacks();
         championMovement.enabled = false;
         championRecPlaybackManager.enabled = false;
-        championCollider.enabled = false;
 
         if (scoreFlag != null) {
             scoreFlag.RemoveScoreFlagParent();

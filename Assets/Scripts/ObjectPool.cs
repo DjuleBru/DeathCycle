@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.InputSystem;
 
 public class ObjectPool : MonoBehaviour {
 
@@ -9,21 +10,37 @@ public class ObjectPool : MonoBehaviour {
     [SerializeField] Player player;
     SpawnPoint[] spawnPoints;
     SpawnPoint selectedSpawnPoint;
-
     private GameObject[] pool;
 
-    private int poolSize = 3;
+    private InputManager inputManager;
 
+    private float moveInput;
+    private int spawnPointNumber = 3;
+    private int selectedSpawnPointInt = 0;
+
+    private bool inputPressed;
     private bool loopOnPause;
     public SpawnPoint SelectedSpawnPoint { get { return selectedSpawnPoint; } }
 
+    private void Awake() { 
+        inputManager = FindObjectOfType<InputManager>();
+    }
+
     private void Start() {
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
+        inputManager.OnInteractHeld += InputManager_OnInteractHeld;
 
-        spawnPoints = GetComponentsInChildren<SpawnPoint>();
+        InitializeSpawnPoints();
         PopulatePool();
 
         loopOnPause = true;
+    }
+
+
+    private void Update() {
+        if (loopOnPause) {
+            HandleSpawnPointSelection();
+        }
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
@@ -37,7 +54,9 @@ public class ObjectPool : MonoBehaviour {
             ActivatePool();
             ResetPool();
 
-            foreach(SpawnPoint spawnPoint in spawnPoints) {
+            selectedSpawnPoint = spawnPoints[selectedSpawnPointInt];
+
+            foreach (SpawnPoint spawnPoint in spawnPoints) {
                 if (spawnPoint == selectedSpawnPoint) {
                     spawnPoint.GetComponentInChildren<Champion>(true).gameObject.SetActive(true);
                     spawnPoint.GetComponentInChildren<Champion>().SetSpawnedLoopNumber(e.loopNumber);
@@ -53,10 +72,15 @@ public class ObjectPool : MonoBehaviour {
         }
     }
 
-    private void PopulatePool() {
-        pool = new GameObject[poolSize];
+    private void InitializeSpawnPoints() {
+        spawnPoints = GetComponentsInChildren<SpawnPoint>();
+        spawnPoints[0].SetHoveredSpawnPoint();
+    }
 
-        for (int i = 0; i < poolSize; i++) {
+    private void PopulatePool() {
+        pool = new GameObject[spawnPointNumber];
+
+        for (int i = 0; i < spawnPointNumber; i++) {
             pool[i] = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity, spawnPoints[i].transform);
             pool[i].GetComponent<Champion>().SetObjectPoolParent(this);
             pool[i].SetActive(false);
@@ -65,7 +89,7 @@ public class ObjectPool : MonoBehaviour {
 
     private void ResetPool() {
         // Reset champion positions to spawn points, reset direction, reset health, reset velocity to zero, remove flag children
-        for (int i = 0; i < poolSize; i++) {
+        for (int i = 0; i < spawnPointNumber; i++) {
             pool[i].transform.position = spawnPoints[i].transform.position;
             pool[i].transform.localScale = Vector3.one;
             pool[i].GetComponent<Champion>().ResetChampionHealth();
@@ -78,7 +102,7 @@ public class ObjectPool : MonoBehaviour {
 
     private void ActivatePool() {
         // Activate all components on all champions
-        for (int i = 0; i < poolSize; i++) {
+        for (int i = 0; i < spawnPointNumber; i++) {
             pool[i].GetComponent<IChampionAttack>().EnableAttacks();
             pool[i].GetComponent<ChampionMovement>().enabled = true;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
@@ -88,16 +112,56 @@ public class ObjectPool : MonoBehaviour {
 
     private void DeactivatePool() {
         // Deactivate all controller components on all champions
-        for (int i = 0; i < poolSize; i++) {
+        for (int i = 0; i < spawnPointNumber; i++) {
             pool[i].GetComponent<IChampionAttack>().DisableAttacks();
             pool[i].GetComponent<ChampionMovement>().enabled = false;
             pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = false;
         }
     }
 
+    private void HandleSpawnPointSelection() {
+        moveInput = inputManager.GetMoveInput();
+
+        if (moveInput == 1 && !inputPressed) {
+            inputPressed = true;
+            spawnPoints[selectedSpawnPointInt].UnhoveredSpawnPoint();
+            selectedSpawnPointInt++;
+
+            if (selectedSpawnPointInt == spawnPointNumber) {
+                selectedSpawnPointInt = 0;
+            }
+            
+            spawnPoints[selectedSpawnPointInt].SetHoveredSpawnPoint();
+        }
+
+        if (moveInput == -1 && !inputPressed) {
+            inputPressed = true;
+            spawnPoints[selectedSpawnPointInt].UnhoveredSpawnPoint();
+
+
+            if (selectedSpawnPointInt == 0) {
+                selectedSpawnPointInt = spawnPointNumber;
+            }
+            selectedSpawnPointInt--;
+
+            spawnPoints[selectedSpawnPointInt].SetHoveredSpawnPoint();
+        }
+
+        if (moveInput == 0) {
+            inputPressed = false;
+        }
+    }
+
+    private void InputManager_OnInteractHeld(object sender, System.EventArgs e) {
+        if (loopOnPause) {
+
+        }
+    }
+
     public void SetSelectedSpawnPoint(SpawnPoint spawnPoint) {
         selectedSpawnPoint = spawnPoint;
     }
+
 
     public Player GetPlayer() {
         return player;

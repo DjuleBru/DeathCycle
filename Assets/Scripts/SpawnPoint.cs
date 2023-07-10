@@ -61,21 +61,18 @@ public class SpawnPoint : MonoBehaviour
         visualGreyed.SetActive(false);
     }
 
-    private void OnMouseDown() {
+    public void SetSelectedSpawnPoint() {
         visualSelected.SetActive(true);
         objectPool.SetSelectedSpawnPoint(this);
     }
 
-    private void OnMouseOver() {
-        if (loopOnPause) {
+    public void SetHoveredSpawnPoint() {
             visualHovered.SetActive(true);
-        }
     }
 
-    private void OnMouseExit() {
-        if (loopOnPause) {
+    public void UnhoveredSpawnPoint() {
             visualHovered.SetActive(false);
-        }
     }
+
 
 }

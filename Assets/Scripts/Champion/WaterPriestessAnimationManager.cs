@@ -12,6 +12,8 @@ public class WaterPriestessAnimationManager : MonoBehaviour
     private Champion champion;
 
     [SerializeField] private float jumpTopSpeedBuffer = 0.2f;
+    private float attack1ToAttack2ExitTime = .55f;
+    private float attack2ToAttack3ExitTime = .7f;
 
     private void Awake() {
         rb = GetComponentInParent<Rigidbody2D>();
@@ -115,12 +117,19 @@ public class WaterPriestessAnimationManager : MonoBehaviour
             animator.SetBool("WillAttack3", false);
         }
         if (e.attackType == "Attack2") {
-            animator.SetBool("WillAttack2", true);
-            animator.SetBool("WillAttack3", false);
+            // Received event for second attack
+
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= attack1ToAttack2ExitTime) {
+                // Event received before animation end frames
+                animator.SetBool("WillAttack2", true);
+                animator.SetBool("WillAttack3", false);
+            }
         }
         if (e.attackType == "Attack3") {
-            animator.SetBool("WillAttack3", true);
-            animator.SetBool("WillAttack2", false);
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= attack2ToAttack3ExitTime) {
+                animator.SetBool("WillAttack3", true);
+                animator.SetBool("WillAttack2", false);
+            }
         }
     }
     #endregion
