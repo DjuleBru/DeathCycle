@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Projectile
+  - Champion
+  - Weapon
+  - ScoreFlag
+  - ScoreZone
+  - ManaOrb
   layers:
   - Default
   - TransparentFX
@@ -11,9 +17,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - ground
+  - champion
+  - weapon
   - 
   - 
   - 
@@ -40,4 +46,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Environment
+    uniqueID: 1970088503
+    locked: 0
+  - name: ScoreFlag
+    uniqueID: 673371587
+    locked: 0
+  - name: Body
+    uniqueID: 3571699257
+    locked: 0
+  - name: Particles
+    uniqueID: 1832088047
+    locked: 0
+  - name: UI
+    uniqueID: 2358957489
+    locked: 0
+  - name: FrontGround
+    uniqueID: 957381147
     locked: 0

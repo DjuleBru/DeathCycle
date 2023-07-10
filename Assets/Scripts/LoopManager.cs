@@ -1,117 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class LoopManager : MonoBehaviour {
-<<<<<<< Updated upstream
 
-    // Dictionaries relative to this loop's player data
-    private Dictionary<int, Vector3> playerPositionRecord = new Dictionary<int, Vector3>();
-    private Dictionary<int, bool> playerIsJump = new Dictionary<int, bool>();
-    private Dictionary<int, bool> playerIsAttack = new Dictionary<int, bool>();
-    private Dictionary<int, bool> playerIsSpecial = new Dictionary<int, bool>();
-    private Dictionary<int, bool> playerIsIdle = new Dictionary<int, bool>();
-
-    private Player player;
-    private Vector3 playerPosition;
-
-    private List<PlayerActions> playerActions = new List<PlayerActions>();
-    private List<PlayerActions> playerActionsPlayback = new List<PlayerActions>();
-
-    private float loopTime = 3f;
-    private float loopTimer = 0f;
-    private int loopIndex = 0;
-
-    private bool isRecording = true;
-    public bool IsRecording { get { return isRecording; } }
-
-    public void Start() {
-        player = GetComponent<Player>();
-    }
-
-    void Update() {
-        if (isRecording) {
-            Recording();
-        } else {
-            PlayBack();
-        }
-
-    }
-
-    void Recording() {
-        if (loopTimer <= loopTime) {
-
-            playerPosition = player.GetPlayerPosition();
-            playerPositionRecord.Add(loopIndex, playerPosition);
-
-            playerActions = player.GetPlayerActions();
-            HandlePlayerActionsRecord(loopIndex, playerActions);
-
-            loopTimer += Time.deltaTime;
-            loopIndex++;
-        } else {
-            isRecording = false;
-            loopTimer = 0;
-            loopIndex = 0;
-        }
-    }
-
-    void PlayBack() {
-        if (loopIndex < playerPositionRecord.Count) {
-
-            playerPosition = playerPositionRecord[loopIndex];
-            playerActionsPlayback = HandlePlayerActionsPlayBack(loopIndex);
-
-            player.SetPlayerposition(playerPosition);
-            player.HandleActions(playerActionsPlayback);
-            playerActionsPlayback.Clear();
-
-            loopTimer += Time.deltaTime;
-            loopIndex++;
-        }
-    }
-
-    void HandlePlayerActionsRecord(int loopIndex, List<PlayerActions> playerActions) {
-        foreach (PlayerActions playerAction in playerActions) {
-            if (playerAction == PlayerActions.attack) {
-                playerIsAttack.Add(loopIndex, true);
-            }
-            if (playerAction == PlayerActions.special) {
-                playerIsSpecial.Add(loopIndex, true);
-            }
-            if (playerAction == PlayerActions.jump) {
-                playerIsJump.Add(loopIndex, true);
-            }
-            if (playerAction == PlayerActions.idle) {
-                playerIsIdle.Add(loopIndex, true);
-            }
-        }
-    }
-
-    List<PlayerActions> HandlePlayerActionsPlayBack(int loopIndex) {
-        if(playerIsAttack.ContainsKey(loopIndex)) {
-            playerActionsPlayback.Add(PlayerActions.attack);
-            Debug.Log("PlayerActions.attack");
-        }
-        if (playerIsJump.ContainsKey(loopIndex)) {
-            playerActionsPlayback.Add(PlayerActions.jump);
-            Debug.Log("PlayerActions.jump");
-        }
-        if (playerIsSpecial.ContainsKey(loopIndex)) {
-            playerActionsPlayback.Add(PlayerActions.special);
-            Debug.Log("PlayerActions.Special");
-        }
-        if (playerIsIdle.ContainsKey(loopIndex)) {
-            playerActionsPlayback.Add(PlayerActions.idle);
-            Debug.Log("PlayerActions.Idle");
-        }
-        return playerActionsPlayback;
-=======
     public static LoopManager Instance { get; private set; }
 
-<<<<<<< Updated upstream
-    private float loopTime = 2f;
-=======
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
 
     public class OnStateChangedEventArgs : EventArgs {
@@ -123,21 +19,26 @@ public class LoopManager : MonoBehaviour {
         Pause,
         Recording,
         Playbacking,
+        RecordingEndBuffer,
+        PlaybackEndBuffer,
     }
 
     private State state;
 
-    [SerializeField] private float loopPauseTime = 3f;
-    [SerializeField] private float loopTime = 20f;
->>>>>>> Stashed changes
+    [SerializeField] private float loopPauseTime;
+    [SerializeField] private float loopTime;
+    [SerializeField] private float loopEndBufferTime;
+
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
+    private float loopPauseTimer = 0f;
+    private float loopEndBufferTimer = 0f;
 
-    private int loopNumber = 1;
-    private bool isRecording;
+    private int loopNumber = 0;
 
-    public bool IsRecording { get { return isRecording; } }
     public int LoopNumber { get { return loopNumber; } }
+    public float LoopPauseTime { get { return loopPauseTime; } }
+    public float LoopTime { get { return loopTime; } }
 
     private void Awake() {
         if (Instance != null) {
@@ -146,27 +47,107 @@ public class LoopManager : MonoBehaviour {
         Instance = this;
     }
 
-    void Update() {
-        Debug.Log(loopNumber);
-        // 1: recording
-        if (loopRecordingTimer <= loopTime) {
-            isRecording = true;
-            loopRecordingTimer += Time.deltaTime;
-        }
-        // 2: recording end
-        else {
-            // 3: playback 
-            if (loopPlaybackTimer <= loopTime) {
-                loopPlaybackTimer += Time.deltaTime;
-                isRecording = false;
-            } else {
-                // 4: playback end
-                loopRecordingTimer = 0;
-                loopPlaybackTimer = 0;
-                loopNumber++;
-                Debug.Log("Loop n " + loopNumber);
-            }
-        }
->>>>>>> Stashed changes
+    private void Start() {
+        state = State.Pause;
     }
+
+    private void Update() {
+        switch (state) {
+            case State.Pause:
+
+                if (loopPauseTimer == 0 && loopNumber == 0) {
+                    // Sending pause event for initialisation in every other class that uses this info
+
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                }
+
+                if (loopPauseTimer <= loopPauseTime) {
+                    loopPauseTimer += Time.deltaTime;
+                } else {
+                    state = State.Recording;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopRecordingTimer = 0f;
+                }
+
+                break;
+
+            case State.Recording:
+
+                if (loopRecordingTimer <= loopTime) {
+                    loopRecordingTimer += Time.deltaTime;
+                } else {
+                    state = State.RecordingEndBuffer;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopPlaybackTimer = 0f;
+                }
+
+                break;
+
+            case State.RecordingEndBuffer:
+
+                if (loopEndBufferTimer <= loopEndBufferTime) {
+                    SlowMotionEffect();
+                    loopEndBufferTimer += Time.deltaTime;
+                } else {
+                    RestoreMotion();
+                    state = State.Playbacking;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopEndBufferTimer = 0f;
+                }
+
+                break;
+
+            case State.Playbacking:
+
+                if (loopPlaybackTimer <= loopTime) {
+                    loopPlaybackTimer += Time.deltaTime;
+                } else {
+                    state = State.PlaybackEndBuffer;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+
+                    loopPauseTimer = 0f;
+                    loopNumber++;
+                }
+                break;
+
+            case State.PlaybackEndBuffer:
+
+                if (loopEndBufferTimer <= loopEndBufferTime) {
+                    SlowMotionEffect();
+                    loopEndBufferTimer += Time.deltaTime;
+                } else {
+                    RestoreMotion();
+                    state = State.Pause;
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                        loopNumber = loopNumber,
+                        state = state
+                    });
+                    loopEndBufferTimer = 0f;
+                }
+                break;
+        }
+    }
+
+    private void SlowMotionEffect() {
+        Time.timeScale = 0.5f;
+    } 
+    private void RestoreMotion() {
+        Time.timeScale = 1f;
+    }
+
 }
