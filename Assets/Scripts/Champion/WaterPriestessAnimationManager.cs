@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChampionAnimationManager : MonoBehaviour
+public class WaterPriestessAnimationManager : MonoBehaviour
 {
     private Animator animator;
     private Rigidbody2D rb;
@@ -88,18 +88,13 @@ public class ChampionAnimationManager : MonoBehaviour
         #endregion
 
         #region JUMP
-        if (rb.velocity.y < jumpTopSpeedBuffer && rb.velocity.y > -jumpTopSpeedBuffer && !championMovement.IsGrounded) {
-            animator.SetBool("JumpingTop", true);
-        } else {
-            animator.SetBool("JumpingTop", false);
-        }
 
-        if (rb.velocity.y >= jumpTopSpeedBuffer) {
+        if (rb.velocity.y > 0) {
             animator.SetBool("JumpingUp", true);
         } else {
             animator.SetBool("JumpingUp", false);
         }
-        if (rb.velocity.y <= -jumpTopSpeedBuffer) {
+        if (rb.velocity.y < 0) {
             animator.SetBool("JumpingDown", true);
         } else {
             animator.SetBool("JumpingDown", false);
@@ -132,12 +127,9 @@ public class ChampionAnimationManager : MonoBehaviour
 
     #region SPECIAL 
     private void IChampionSpecial_OnSpecial(object sender, IChampionSpecial.OnSpecialEventArgs e) {
-        Debug.Log("Special");
         animator.SetTrigger("Special");
-        Debug.Break();
     }
     private void IChampionSpecial_OnSpecialLackingMana(object sender, System.EventArgs e) {
-        Debug.Log("SpecialLackinngMana");
         animator.SetTrigger("SpecialLackingMana");
     }
     #endregion

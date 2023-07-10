@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChampionAttack : MonoBehaviour, IChampionAttack
+public class ChampionAttackMeleeCombo : MonoBehaviour, IChampionAttack
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
     private ChampionAttackType championAttackType = new ChampionAttackType();

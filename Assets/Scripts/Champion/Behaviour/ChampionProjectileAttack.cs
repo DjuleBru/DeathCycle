@@ -6,7 +6,6 @@ using UnityEngine;
 public class ChampionProjectileAttack : MonoBehaviour
 {
 
-    private ChampionAttack championAttack;
     private Champion champion;
     private ChampionSO championSO;
 
@@ -15,7 +14,6 @@ public class ChampionProjectileAttack : MonoBehaviour
 
     private void Awake() {
         champion = GetComponent<Champion>();
-        championAttack = champion.GetComponent<ChampionAttack>();
         championSO = champion.ChampionSO;
     }
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChampionSpecial : MonoBehaviour, IChampionSpecial
+public class ChampionSpecialClassic : MonoBehaviour, IChampionSpecial
 {
     private ChampionActions championActionsThisFrame = new ChampionActions();
     private ChampionAttackType championAttackType = new ChampionAttackType();
@@ -69,12 +69,16 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
     }
 
     private void InputManager_OnSpecialPressed(object sender, EventArgs e) {
-        if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
+        if (gameObject.activeSelf) {
+            // GameObject is Active
 
-            Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
-            Vector3 specialDir = mousePosition - transform.position;
+            if (loopOnRecording && LoopManager.Instance.LoopNumber == champion.SpawnedLoopNumber) {
 
-            HandleSpecial(specialDir);
+                Vector3 mousePosition = inputManager.GetMousePositionWorldSpace();
+                Vector3 specialDir = mousePosition - transform.position;
+
+                HandleSpecial(specialDir);
+            }
         }
     }
 
