@@ -10,6 +10,7 @@ TagManager:
   - ScoreFlag
   - ScoreZone
   - ManaOrb
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

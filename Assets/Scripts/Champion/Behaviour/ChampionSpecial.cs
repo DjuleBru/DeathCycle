@@ -16,6 +16,7 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
     public event EventHandler OnSpecialLackingMana;
 
     private bool isSpecialing;
+    private bool isSpecialingLackingMana;
 
     public bool IsSpecialing { get { return isSpecialing; } }
 
@@ -47,21 +48,22 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
 
     private void HandleSpecial(Vector3 specialDir) {
 
-        if (rb.velocity.y == 0 && !isSpecialing) {
-            // Champion is grounded and not already doing special action
-
+        if (rb.velocity.y == 0! && !isSpecialing) {
+            // Champion is grounded 
+            
             if(champion.GetObjectPoolParent().GetPlayer().PlayerMana >= champion.ChampionSO.specialManaCost) {
-                // Champion has enough mana to cast special
-
-                champion.GetObjectPoolParent().GetPlayer().DecreaseMana(champion.ChampionSO.specialManaCost);
+                // Champion has enough mana to cast special and not already doing special action
 
                 OnSpecial?.Invoke(this, new IChampionSpecial.OnSpecialEventArgs {
                     specialDir = specialDir,
                     attackType = championAttackType.SPECIALATTACK
                 });
-            } else {
+                champion.GetObjectPoolParent().GetPlayer().DecreaseMana(champion.ChampionSO.specialManaCost);
+
+            } else if (!isSpecialing && !isSpecialingLackingMana && champion.GetObjectPoolParent().GetPlayer().PlayerMana < champion.ChampionSO.specialManaCost) {
                 // Champion does not have enough mana
                 OnSpecialLackingMana?.Invoke(this, EventArgs.Empty);
+                isSpecialingLackingMana = true;
             }
         }
     }
@@ -103,6 +105,9 @@ public class ChampionSpecial : MonoBehaviour, IChampionSpecial
 
     public void SetIsSpecialing(bool isSpecialing) {
         this.isSpecialing = isSpecialing;
+    }
+    public void SetIsSpecialingLackingMana(bool isSpecialingLackingMana) {
+        this.isSpecialingLackingMana = isSpecialingLackingMana;
     }
 
     public void DisableSpecial() {

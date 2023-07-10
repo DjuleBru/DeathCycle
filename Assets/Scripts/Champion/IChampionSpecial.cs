@@ -22,6 +22,9 @@ public interface IChampionSpecial {
     public void SetIsSpecialing(bool isSpecialing) {
     }
 
+    public void SetIsSpecialingLackingMana(bool isSpecialingLackingMana) { 
+    }
+
     public void DisableSpecial() {
     }
 
