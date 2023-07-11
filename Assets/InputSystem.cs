@@ -71,6 +71,15 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b0ed422-0850-43c6-bac4-cf36e37392dc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -150,6 +159,17 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
                     ""action"": ""Special"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb591187-490e-466f-ba08-d9219f49d0a3"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -163,6 +183,7 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
         m_Player_MouseAim = m_Player.FindAction("MouseAim", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_Special = m_Player.FindAction("Special", throwIfNotFound: true);
+        m_Player_Back = m_Player.FindAction("Back", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -229,6 +250,7 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MouseAim;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Special;
+    private readonly InputAction m_Player_Back;
     public struct PlayerActions
     {
         private @InputSystem m_Wrapper;
@@ -238,6 +260,7 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
         public InputAction @MouseAim => m_Wrapper.m_Player_MouseAim;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Special => m_Wrapper.m_Player_Special;
+        public InputAction @Back => m_Wrapper.m_Player_Back;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -262,6 +285,9 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
             @Special.started += instance.OnSpecial;
             @Special.performed += instance.OnSpecial;
             @Special.canceled += instance.OnSpecial;
+            @Back.started += instance.OnBack;
+            @Back.performed += instance.OnBack;
+            @Back.canceled += instance.OnBack;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -281,6 +307,9 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
             @Special.started -= instance.OnSpecial;
             @Special.performed -= instance.OnSpecial;
             @Special.canceled -= instance.OnSpecial;
+            @Back.started -= instance.OnBack;
+            @Back.performed -= instance.OnBack;
+            @Back.canceled -= instance.OnBack;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -305,5 +334,6 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
         void OnMouseAim(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnSpecial(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
 }

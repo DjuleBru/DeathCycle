@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c249de9f0f408454892751c84da20275, type: 3}
   m_Name: WaterPriestess
   m_EditorClassIdentifier: 
-  Champion: {fileID: 8088354660951978602, guid: b0f6737a12a37c74fbf382d10b37ab7b, type: 3}
+  Champion: {fileID: 8936927827343757148, guid: b0f6737a12a37c74fbf382d10b37ab7b, type: 3}
+  sprite: {fileID: 21300000, guid: 5019055fb74c7d349911482a8cbb1dd2, type: 3}
   moveSpeed: 1.6
   velPower: 0.9
   acceleration: 5

@@ -8,6 +8,7 @@ public class SpawnPoint : MonoBehaviour
     [SerializeField] GameObject visualHovered;
     [SerializeField] GameObject visualGreyed;
     ObjectPool objectPool;
+    ChampionSelectionUI championSelectionUI;
 
     private float recordingTimer = 0f;
     private float spawnPointVisualActiveTime = 1f;
@@ -17,6 +18,7 @@ public class SpawnPoint : MonoBehaviour
 
     private void Awake() {
         objectPool = GetComponentInParent<ObjectPool>();
+        championSelectionUI = GetComponentInChildren<ChampionSelectionUI>();
     }
 
 
@@ -30,6 +32,7 @@ public class SpawnPoint : MonoBehaviour
         if (objectPool.SelectedSpawnPoint != this) {
             // The selected spawn point is another spawn point
             visualSelected.SetActive(false);
+            championSelectionUI.gameObject.SetActive(false);
         }
         if (loopOnRecording && recordingTimer > spawnPointVisualActiveTime) {
             DeactivateVisuals();
@@ -64,14 +67,15 @@ public class SpawnPoint : MonoBehaviour
     public void SetSelectedSpawnPoint() {
         visualSelected.SetActive(true);
         objectPool.SetSelectedSpawnPoint(this);
+        championSelectionUI.gameObject.SetActive(true);
     }
 
     public void SetHoveredSpawnPoint() {
-            visualHovered.SetActive(true);
+        visualHovered.SetActive(true);
     }
 
     public void UnhoveredSpawnPoint() {
-            visualHovered.SetActive(false);
+        visualHovered.SetActive(false);
     }
 
 

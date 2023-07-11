@@ -6,7 +6,8 @@ using UnityEngine;
 public class ChampionSO : ScriptableObject
 {
     #region CHAMPION UNIQUENESS
-    public GameObject Champion;
+    public Champion Champion;
+    public Sprite sprite;
     #endregion
 
     #region CHAMPION MOVEMENT PARAMETERS

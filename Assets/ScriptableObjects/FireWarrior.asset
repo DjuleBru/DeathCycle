@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c249de9f0f408454892751c84da20275, type: 3}
   m_Name: FireWarrior
   m_EditorClassIdentifier: 
-  Champion: {fileID: 8107192383800292863, guid: afd12343b7bb1fa44b09d979dcf3fa1b, type: 3}
+  Champion: {fileID: 8987860715287152841, guid: afd12343b7bb1fa44b09d979dcf3fa1b, type: 3}
+  sprite: {fileID: 21300000, guid: b237a354b1b997246b5ab61a6abe1e60, type: 3}
   moveSpeed: 1.3
   velPower: 0.9
   acceleration: 5

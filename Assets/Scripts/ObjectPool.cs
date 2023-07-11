@@ -6,10 +6,16 @@ using UnityEngine.InputSystem;
 
 public class ObjectPool : MonoBehaviour {
 
-    [SerializeField] GameObject champion;
+    [SerializeField] GameObject[] champions;
     [SerializeField] Player player;
+
     SpawnPoint[] spawnPoints;
     SpawnPoint selectedSpawnPoint;
+
+    ChampionIconTemplateUI[] championsIconTemplateUI;
+    ChampionIconTemplateUI selectedChampionIconTemplateUI;
+    Champion selectedChampion;
+
     private GameObject[] pool;
 
     private InputManager inputManager;
@@ -18,9 +24,13 @@ public class ObjectPool : MonoBehaviour {
     private int spawnPointNumber = 3;
     private int selectedSpawnPointInt = 0;
 
+    private int championNumber = 4;
+    private int selectedChampionInt = 0;
+
     private bool inputPressed;
     private bool loopOnPause;
     public SpawnPoint SelectedSpawnPoint { get { return selectedSpawnPoint; } }
+    public ChampionIconTemplateUI SelectedChampionIconTemplateUI { get { return selectedChampionIconTemplateUI; } }
 
     private void Awake() { 
         inputManager = FindObjectOfType<InputManager>();
@@ -28,7 +38,8 @@ public class ObjectPool : MonoBehaviour {
 
     private void Start() {
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
-        inputManager.OnInteractHeld += InputManager_OnInteractHeld;
+        inputManager.OnAttackPressed += InputManager_OnSelectPressed;
+        inputManager.OnBackPressed += InputManager_OnBackPressed;
 
         InitializeSpawnPoints();
         PopulatePool();
@@ -36,10 +47,13 @@ public class ObjectPool : MonoBehaviour {
         loopOnPause = true;
     }
 
-
     private void Update() {
         if (loopOnPause) {
-            HandleSpawnPointSelection();
+            if (selectedSpawnPoint != null) {
+                HandleChampionSelection(selectedSpawnPoint);
+            } else {
+                HandleSpawnPointSelection();
+            }
         }
     }
 
@@ -55,13 +69,11 @@ public class ObjectPool : MonoBehaviour {
             ResetPool();
 
             selectedSpawnPoint = spawnPoints[selectedSpawnPointInt];
+            SpawnSelectedChampion(selectedSpawnPoint, e.loopNumber);
 
-            foreach (SpawnPoint spawnPoint in spawnPoints) {
-                if (spawnPoint == selectedSpawnPoint) {
-                    spawnPoint.GetComponentInChildren<Champion>(true).gameObject.SetActive(true);
-                    spawnPoint.GetComponentInChildren<Champion>().SetSpawnedLoopNumber(e.loopNumber);
-                }
-            }
+            selectedChampion = null;
+            selectedSpawnPoint = null;
+
         }
         if (e.state == LoopManager.State.Playbacking) {
             ActivatePool();
@@ -81,41 +93,50 @@ public class ObjectPool : MonoBehaviour {
         pool = new GameObject[spawnPointNumber];
 
         for (int i = 0; i < spawnPointNumber; i++) {
-            pool[i] = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity, spawnPoints[i].transform);
-            pool[i].GetComponent<Champion>().SetObjectPoolParent(this);
-            pool[i].SetActive(false);
+            foreach (GameObject champion in champions) {
+                pool[i] = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity, spawnPoints[i].transform);
+                pool[i].GetComponent<Champion>().SetObjectPoolParent(this);
+                pool[i].SetActive(false);
+            }
         }
     }
 
     private void ResetPool() {
         // Reset champion positions to spawn points, reset direction, reset health, reset velocity to zero, remove flag children
         for (int i = 0; i < spawnPointNumber; i++) {
-            pool[i].transform.position = spawnPoints[i].transform.position;
-            pool[i].transform.localScale = Vector3.one;
-            pool[i].GetComponent<Champion>().ResetChampionHealth();
-            pool[i].GetComponent<Champion>().RemoveFlagChildren();
-            pool[i].GetComponent<IChampionAttack>().ResetAttacks();
-            pool[i].GetComponent<Animator>().Play("Idle");
-            pool[i].GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
+            foreach(Champion champion in spawnPoints[i].GetComponentsInChildren<Champion>()) {
+
+                champion.transform.position = spawnPoints[i].transform.position;
+                champion.transform.localScale = Vector3.one;
+                champion.GetComponent<Champion>().ResetChampionHealth();
+                champion.GetComponent<Champion>().RemoveFlagChildren();
+                champion.GetComponent<IChampionAttack>().ResetAttacks();
+                champion.GetComponent<Animator>().Play("Idle");
+                champion.GetComponent<ChampionMovement>().SetVelocity(Vector3.zero);
+            }
         }
     }
 
     private void ActivatePool() {
         // Activate all components on all champions
         for (int i = 0; i < spawnPointNumber; i++) {
-            pool[i].GetComponent<IChampionAttack>().EnableAttacks();
-            pool[i].GetComponent<ChampionMovement>().enabled = true;
-            pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = true;
-            pool[i].GetComponent<Collider2D>().enabled = true;
+            foreach (Champion champion in spawnPoints[i].GetComponentsInChildren<Champion>()) {
+                champion.GetComponent<IChampionAttack>().EnableAttacks();
+                champion.GetComponent<ChampionMovement>().enabled = true;
+                champion.GetComponent<ChampionRecPlaybackManager>().enabled = true;
+                champion.GetComponent<Collider2D>().enabled = true;
+            }
         }
     }
 
     private void DeactivatePool() {
         // Deactivate all controller components on all champions
         for (int i = 0; i < spawnPointNumber; i++) {
-            pool[i].GetComponent<IChampionAttack>().DisableAttacks();
-            pool[i].GetComponent<ChampionMovement>().enabled = false;
-            pool[i].GetComponent<ChampionRecPlaybackManager>().enabled = false;
+            foreach (Champion champion in spawnPoints[i].GetComponentsInChildren<Champion>()) {
+                champion.GetComponent<IChampionAttack>().DisableAttacks();
+                champion.GetComponent<ChampionMovement>().enabled = false;
+                champion.GetComponent<ChampionRecPlaybackManager>().enabled = false;
+            }
         }
     }
 
@@ -130,8 +151,6 @@ public class ObjectPool : MonoBehaviour {
             if (selectedSpawnPointInt == spawnPointNumber) {
                 selectedSpawnPointInt = 0;
             }
-            
-            spawnPoints[selectedSpawnPointInt].SetHoveredSpawnPoint();
         }
 
         if (moveInput == -1 && !inputPressed) {
@@ -143,25 +162,89 @@ public class ObjectPool : MonoBehaviour {
                 selectedSpawnPointInt = spawnPointNumber;
             }
             selectedSpawnPointInt--;
-
-            spawnPoints[selectedSpawnPointInt].SetHoveredSpawnPoint();
         }
+
+        spawnPoints[selectedSpawnPointInt].SetHoveredSpawnPoint();
 
         if (moveInput == 0) {
             inputPressed = false;
         }
     }
 
-    private void InputManager_OnInteractHeld(object sender, System.EventArgs e) {
-        if (loopOnPause) {
+    private void HandleChampionSelection(SpawnPoint spawnpoint) {
+        championsIconTemplateUI = spawnpoint.GetComponentInChildren<ChampionSelectionUI>().GetChampionIconTemplateUIArray();
+        moveInput = inputManager.GetMoveInput();
 
+        if (moveInput == 1 && !inputPressed) {
+            inputPressed = true;
+            championsIconTemplateUI[selectedChampionInt].UnhoveredChampionIcon();
+            selectedChampionInt++;
+
+            if (selectedChampionInt == championNumber) {
+                selectedChampionInt = 0;
+            }
+        }
+
+        if (moveInput == -1 && !inputPressed) {
+            inputPressed = true;
+            championsIconTemplateUI[selectedChampionInt].UnhoveredChampionIcon();
+
+            if (selectedChampionInt == 0) {
+                selectedChampionInt = championNumber;
+            }
+            selectedChampionInt--;
+        }
+        championsIconTemplateUI[selectedChampionInt].SetHoveredChampionIcon();
+
+        if (moveInput == 0) {
+            inputPressed = false;
         }
     }
+
+    private void SpawnSelectedChampion(SpawnPoint selectedSpawnPoint, int loopNumber) {
+        foreach (SpawnPoint spawnPoint in spawnPoints) {
+            if (spawnPoint == selectedSpawnPoint) {
+
+                foreach (Champion champion in spawnPoint.GetComponentsInChildren<Champion>(true)) {
+                    if (champion.ChampionSO == selectedChampion.ChampionSO) {
+                        champion.gameObject.SetActive(true);
+                        champion.GetComponent<Champion>().SetSpawnedLoopNumber(loopNumber);
+                    }
+                }
+            }
+        }
+    }
+
+    private void InputManager_OnSelectPressed(object sender, System.EventArgs e) {
+        if (selectedSpawnPoint != null && selectedChampion == null) {
+            championsIconTemplateUI[selectedChampionInt].SetSelectedChampionIcon();
+        }
+
+        if (selectedSpawnPoint == null) {
+            spawnPoints[selectedSpawnPointInt].SetSelectedSpawnPoint();
+        }
+    }
+
+    private void InputManager_OnBackPressed(object sender, System.EventArgs e) {
+        if (selectedSpawnPoint != null && selectedChampion == null) {
+            selectedSpawnPoint = null;
+        }
+        if (selectedChampion != null) {
+            selectedChampion = null;
+        }
+     }
 
     public void SetSelectedSpawnPoint(SpawnPoint spawnPoint) {
         selectedSpawnPoint = spawnPoint;
     }
 
+    public void SetSelectedChampionIconTemplateUI(ChampionIconTemplateUI championIconTemplateUI) {
+        selectedChampionIconTemplateUI = championIconTemplateUI;
+    }
+
+    public void SetSelectedChampion(Champion champion) {
+        selectedChampion = champion;
+    }
 
     public Player GetPlayer() {
         return player;

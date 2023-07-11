@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnSpecialPressed;
     public event EventHandler OnSpecialReleased;
 
-    public event EventHandler OnInteractHeld;
+    public event EventHandler OnBackPressed;
 
     private InputSystem inputSystem;
 
@@ -29,11 +29,8 @@ public class InputManager : MonoBehaviour
         inputSystem.Player.Attack.canceled += Attack_canceled;
         inputSystem.Player.Special.started += Special_started;
         inputSystem.Player.Special.canceled += Special_canceled;
-
-        inputSystem.Player.Attack.performed += Interact_held;
+        inputSystem.Player.Back.started += Back_started;
     }
-
-
 
     private void Special_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnSpecialReleased?.Invoke(this, EventArgs.Empty);
@@ -58,8 +55,8 @@ public class InputManager : MonoBehaviour
     private void Jump_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnJumpPressed?.Invoke(this, EventArgs.Empty);
     }
-    private void Interact_held(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
-        OnInteractHeld?.Invoke(this, EventArgs.Empty);
+    private void Back_started(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnBackPressed?.Invoke(this, EventArgs.Empty);
     }
 
     public float GetMoveInput() {

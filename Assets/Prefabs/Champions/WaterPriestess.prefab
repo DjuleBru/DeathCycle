@@ -19,6 +19,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterPriestess
       objectReference: {fileID: 0}
+    - target: {fileID: 880949846306087877, guid: a93a4b06960234c42a8dcd6764ee0ba8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 880949846306087882, guid: a93a4b06960234c42a8dcd6764ee0ba8, type: 3}
       propertyPath: m_RootOrder
       value: 0
