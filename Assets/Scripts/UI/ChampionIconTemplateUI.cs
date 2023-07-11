@@ -11,6 +11,7 @@ public class ChampionIconTemplateUI : MonoBehaviour
 
     [SerializeField] GameObject visualSelected;
     [SerializeField] GameObject visualHovered;
+    [SerializeField] GameObject visualExhausted;
     [SerializeField] GameObject visualGreyed;
 
     private ObjectPool objectPool;
@@ -18,7 +19,9 @@ public class ChampionIconTemplateUI : MonoBehaviour
 
     private bool loopOnRecording;
     private bool loopOnPause;
+    private bool isExhausted;
 
+    public bool IsExhausted { get { return isExhausted; } }
     public ChampionSO ChampionSO {  get { return championSO; } }
 
     private void Awake() {
@@ -54,12 +57,15 @@ public class ChampionIconTemplateUI : MonoBehaviour
     }
 
     public void SetExhaustedChampionIcon() {
+        visualExhausted.SetActive(true);
+        isExhausted = true;
     }
 
     private void DeactivateVisuals() {
         visualHovered.SetActive(false);
         visualGreyed.SetActive(false);
         visualSelected.SetActive(false);
+        visualExhausted.SetActive(false);
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {

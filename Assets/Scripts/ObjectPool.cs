@@ -12,11 +12,9 @@ public class ObjectPool : MonoBehaviour {
     SpawnPoint[] spawnPoints;
     SpawnPoint selectedSpawnPoint;
 
-    ChampionIconTemplateUI[] championsIconTemplateUI;
+    ChampionIconTemplateUI[] championsIconTemplateUIArray;
     ChampionIconTemplateUI selectedChampionIconTemplateUI;
     Champion selectedChampion;
-
-    private GameObject[] pool;
 
     private InputManager inputManager;
 
@@ -70,6 +68,7 @@ public class ObjectPool : MonoBehaviour {
 
             selectedSpawnPoint = spawnPoints[selectedSpawnPointInt];
             SpawnSelectedChampion(selectedSpawnPoint, e.loopNumber);
+            ExhaustSelectedChampion(selectedChampion);
 
             selectedChampion = null;
             selectedSpawnPoint = null;
@@ -90,13 +89,12 @@ public class ObjectPool : MonoBehaviour {
     }
 
     private void PopulatePool() {
-        pool = new GameObject[spawnPointNumber];
 
         for (int i = 0; i < spawnPointNumber; i++) {
             foreach (GameObject champion in champions) {
-                pool[i] = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity, spawnPoints[i].transform);
-                pool[i].GetComponent<Champion>().SetObjectPoolParent(this);
-                pool[i].SetActive(false);
+                GameObject championPrefab = Instantiate(champion, spawnPoints[i].transform.position, Quaternion.identity, spawnPoints[i].transform);
+                championPrefab.GetComponent<Champion>().SetObjectPoolParent(this);
+                championPrefab.SetActive(false);
             }
         }
     }
@@ -171,30 +169,51 @@ public class ObjectPool : MonoBehaviour {
         }
     }
 
-    private void HandleChampionSelection(SpawnPoint spawnpoint) {
-        championsIconTemplateUI = spawnpoint.GetComponentInChildren<ChampionSelectionUI>().GetChampionIconTemplateUIArray();
+    private void HandleChampionSelection(SpawnPoint spawnPoint) {
+        championsIconTemplateUIArray = spawnPoint.GetComponentInChildren<ChampionSelectionUI>().GetChampionIconTemplateUIArray();
         moveInput = inputManager.GetMoveInput();
 
         if (moveInput == 1 && !inputPressed) {
             inputPressed = true;
-            championsIconTemplateUI[selectedChampionInt].UnhoveredChampionIcon();
-            selectedChampionInt++;
+            championsIconTemplateUIArray[selectedChampionInt].UnhoveredChampionIcon();
 
-            if (selectedChampionInt == championNumber) {
-                selectedChampionInt = 0;
+            bool championSelected = false;
+            while(!championSelected) {
+
+                selectedChampionInt++;
+
+                if (selectedChampionInt == championNumber) {
+                    selectedChampionInt = 0;
+                }
+
+                if (!championsIconTemplateUIArray[selectedChampionInt].IsExhausted) {
+                    // Champion is not exhausted, selectable
+                    championsIconTemplateUIArray[selectedChampionInt].SetHoveredChampionIcon();
+                    championSelected = true;
+                }
             }
+            
         }
 
         if (moveInput == -1 && !inputPressed) {
             inputPressed = true;
-            championsIconTemplateUI[selectedChampionInt].UnhoveredChampionIcon();
+            championsIconTemplateUIArray[selectedChampionInt].UnhoveredChampionIcon();
 
-            if (selectedChampionInt == 0) {
-                selectedChampionInt = championNumber;
+            bool championSelected = false;
+            while (!championSelected) {
+
+                if (selectedChampionInt == 0) {
+                    selectedChampionInt = championNumber;
+                }
+                selectedChampionInt--;
+
+                if (!championsIconTemplateUIArray[selectedChampionInt].IsExhausted) {
+                    // Champion is not exhausted, selectable
+                    championsIconTemplateUIArray[selectedChampionInt].SetHoveredChampionIcon();
+                    championSelected = true;
+                }
             }
-            selectedChampionInt--;
         }
-        championsIconTemplateUI[selectedChampionInt].SetHoveredChampionIcon();
 
         if (moveInput == 0) {
             inputPressed = false;
@@ -204,12 +223,56 @@ public class ObjectPool : MonoBehaviour {
     private void SpawnSelectedChampion(SpawnPoint selectedSpawnPoint, int loopNumber) {
         foreach (SpawnPoint spawnPoint in spawnPoints) {
             if (spawnPoint == selectedSpawnPoint) {
+                if (selectedChampion != null) {
+                    // Player selected a champion
 
-                foreach (Champion champion in spawnPoint.GetComponentsInChildren<Champion>(true)) {
-                    if (champion.ChampionSO == selectedChampion.ChampionSO) {
-                        champion.gameObject.SetActive(true);
-                        champion.GetComponent<Champion>().SetSpawnedLoopNumber(loopNumber);
+                    foreach (Champion champion in spawnPoint.GetComponentsInChildren<Champion>(true)) {
+                        if (champion.ChampionSO == selectedChampion.ChampionSO) {
+                            champion.gameObject.SetActive(true);
+                            champion.GetComponent<Champion>().SetSpawnedLoopNumber(loopNumber);
+                        }
                     }
+                } else {
+                    // Player did not select a champion
+
+                    championsIconTemplateUIArray = spawnPoint.GetComponentInChildren<ChampionSelectionUI>(true).GetChampionIconTemplateUIArray();
+
+                    bool championSelected = false;
+                    selectedChampionInt = 0;
+
+                    while (!championSelected) {
+
+                        selectedChampionInt++;
+
+                        if (selectedChampionInt == championNumber) {
+                            selectedChampionInt = 0;
+                        }
+
+                        if (!championsIconTemplateUIArray[selectedChampionInt].IsExhausted) {
+                            // Champion is not exhausted
+
+                            foreach (Champion champion in spawnPoint.GetComponentsInChildren<Champion>(true)) {
+                                if (champion.ChampionSO == championsIconTemplateUIArray[selectedChampionInt].ChampionSO) {
+
+                                    champion.gameObject.SetActive(true);
+                                    champion.GetComponent<Champion>().SetSpawnedLoopNumber(loopNumber);
+                                    selectedChampion = champion;
+                                    championSelected = true;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void ExhaustSelectedChampion(Champion selectedChampion) {
+        foreach (SpawnPoint spawnPoint in spawnPoints) {
+            foreach (ChampionIconTemplateUI championIconTemplateUI in spawnPoint.GetComponentsInChildren<ChampionIconTemplateUI>(true)) {
+                if(championIconTemplateUI.ChampionSO == selectedChampion.ChampionSO) {
+                    championIconTemplateUI.SetExhaustedChampionIcon();
                 }
             }
         }
@@ -217,7 +280,7 @@ public class ObjectPool : MonoBehaviour {
 
     private void InputManager_OnSelectPressed(object sender, System.EventArgs e) {
         if (selectedSpawnPoint != null && selectedChampion == null) {
-            championsIconTemplateUI[selectedChampionInt].SetSelectedChampionIcon();
+            championsIconTemplateUIArray[selectedChampionInt].SetSelectedChampionIcon();
         }
 
         if (selectedSpawnPoint == null) {

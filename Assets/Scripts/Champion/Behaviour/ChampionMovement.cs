@@ -256,7 +256,6 @@ public class ChampionMovement : MonoBehaviour
     }
 
     public void SetVelocity(Vector3 velocity) {
-        Debug.Log(rb);
         rb.velocity = velocity;
     }
 
