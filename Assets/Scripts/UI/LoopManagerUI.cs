@@ -22,7 +22,7 @@ public class LoopManagerUI : MonoBehaviour
     private bool loopOnPause;
     private bool loopOnRecording;
     private bool loopOnPlaybacking;
-
+    private bool loopOnEndBuffer;
 
     private void Start() {
         LoopManager.Instance.OnStateChanged += LoopManager_OnStateChanged;
@@ -37,6 +37,8 @@ public class LoopManagerUI : MonoBehaviour
             loopOnPause = true;
             loopOnRecording = false;
             loopOnPlaybacking = false;
+            loopOnEndBuffer = false;
+
             loopOnPauseTimer = loopOnPauseTime;
 
             RecordingImage.gameObject.SetActive(false);
@@ -52,6 +54,7 @@ public class LoopManagerUI : MonoBehaviour
             loopOnPause = false;
             loopOnRecording = true;
             loopOnPlaybacking = false;
+            loopOnEndBuffer = false;
 
             loopTimer = loopTime;
 
@@ -66,6 +69,7 @@ public class LoopManagerUI : MonoBehaviour
             loopOnPause = false;
             loopOnRecording = false;
             loopOnPlaybacking = true;
+            loopOnEndBuffer = false;
 
             loopTimer = loopTime;
 
@@ -77,6 +81,9 @@ public class LoopManagerUI : MonoBehaviour
             pauseCountDownText.gameObject.SetActive(false);
             loopNumberDisplayed++;
         }
+        if (e.state == LoopManager.State.RecordingEndBuffer || e.state == LoopManager.State.PlaybackEndBuffer) {
+            loopOnEndBuffer = true;
+        }
     }
 
     private void Update() {
@@ -87,6 +94,9 @@ public class LoopManagerUI : MonoBehaviour
         if (loopOnRecording || loopOnPlaybacking) {
             recplayCountDownText.text = Math.Ceiling(loopTimer).ToString();
             loopTimer -= Time.deltaTime;
+        }
+        if (loopOnEndBuffer) {
+            recplayCountDownText.text = "0";
         }
     }
 
