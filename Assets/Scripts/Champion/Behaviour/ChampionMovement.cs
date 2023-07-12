@@ -22,10 +22,10 @@ public class ChampionMovement : MonoBehaviour
 
     #region CHECK PARAMETERS
     [SerializeField] private Transform _groundCheckPoint;
-    [SerializeField] private Vector2 _groundCheckSize = new Vector2(0.49f, 0.03f);
     [SerializeField] private Transform _frontWallCheckPoint;
     [SerializeField] private Transform _backWallCheckPoint;
-    [SerializeField] private Vector2 _wallCheckSize = new Vector2(0.5f, 1f);
+    private Vector2 _groundCheckSize = new Vector2(0.49f, 0.03f);
+    private Vector2 _wallCheckSize = new Vector2(0.5f, 1f);
 
     [SerializeField] private LayerMask _groundLayer;
     #endregion
@@ -66,6 +66,8 @@ public class ChampionMovement : MonoBehaviour
         iChampionSpecial = GetComponent<IChampionSpecial>();
         iChampionAttack = GetComponent<IChampionAttack>();
         championSO = champion.ChampionSO;
+
+        _groundCheckSize.x = _frontWallCheckPoint.transform.position.x;
 
         inputManager.OnJumpPressed += InputManager_OnJumpPressed;
         inputManager.OnJumpReleased += InputManager_OnJumpReleased;

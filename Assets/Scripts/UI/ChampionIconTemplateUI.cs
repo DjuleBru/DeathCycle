@@ -17,7 +17,6 @@ public class ChampionIconTemplateUI : MonoBehaviour
     private ObjectPool objectPool;
     private LoopManager loopManager;
 
-    private bool loopOnRecording;
     private bool loopOnPause;
     private bool isExhausted;
 
@@ -36,9 +35,11 @@ public class ChampionIconTemplateUI : MonoBehaviour
     }
 
     private void Update() {
-        if (objectPool.SelectedChampionIconTemplateUI != this) {
-            // The selected spawn point is another spawn point
-            visualSelected.SetActive(false);
+        if (loopOnPause) {
+            if (objectPool.SelectedChampionIconTemplateUI != this) {
+                // The selected spawn point is another spawn point
+                visualSelected.SetActive(false);
+            }
         }
     }
 
@@ -72,9 +73,7 @@ public class ChampionIconTemplateUI : MonoBehaviour
         if (e.state == LoopManager.State.Pause) {
             visualGreyed.SetActive(true);
             loopOnPause = true;
-        }
-        if (e.state == LoopManager.State.Recording) {
-            loopOnRecording = true;
+        } else {
             DeactivateVisuals();
         }
     }

@@ -44,6 +44,7 @@ public class ScoreFlag : MonoBehaviour
 
     public void ResetScoreFlagPosition() {
         transform.position = initialPosition;
+        transform.rotation = Quaternion.identity;
     }
 
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
