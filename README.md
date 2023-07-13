@@ -4,7 +4,7 @@ Hello Max !
 
 Je ne suis pas particulièrement fier de ce début de projet... j'ai hâte d'avoir tes retours :)
 
-Comme il n'y a aucune instructions, juste des mécaniques, voici ce qu'il faut savoir :
+Comme il n'y a aucune instructions, aucun menu, aucun endgame... juste des mécaniques, voici ce qu'il faut savoir :
 
 - C'est un jeu sencé être en multijoueur (au moins local)
 - Contrôles
