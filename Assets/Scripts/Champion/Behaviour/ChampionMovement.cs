@@ -20,6 +20,9 @@ public class ChampionMovement : MonoBehaviour
     private IChampionSpecial iChampionSpecial;
     private IChampionAttack iChampionAttack;
 
+    private Vector3 scalePos = new Vector3(1f, 1f,.1f);
+    private Vector3 scaleNeg = new Vector3(-1f, 1f, 1f);
+
     #region CHECK PARAMETERS
     [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private Transform _frontWallCheckPoint;
@@ -143,7 +146,6 @@ public class ChampionMovement : MonoBehaviour
 
         #region GRAVITY
         
-
         // Higher gravity if jump button released and speed reduction
         if (isJumpCut) {
             SetGravityScale(championSO.gravityScale * championSO.jumpCutGravityMult);
@@ -176,12 +178,11 @@ public class ChampionMovement : MonoBehaviour
         // set visual left or right
         if (moveInput != 0) {
             if (moveInput > 0) {
-                gameObject.transform.localScale = new Vector3(1, 1, 1);
+                gameObject.transform.localScale = scalePos;
             } else {
-                gameObject.transform.localScale = new Vector3(-1, 1, 1);
+                gameObject.transform.localScale = scaleNeg;
             }
         }
-
         #endregion
 
         #region Friction

@@ -72,6 +72,11 @@ public class ChampionIconTemplateUI : MonoBehaviour
     private void LoopManager_OnStateChanged(object sender, LoopManager.OnStateChangedEventArgs e) {
         if (e.state == LoopManager.State.Pause) {
             visualGreyed.SetActive(true);
+
+            if (isExhausted) {
+                visualExhausted.SetActive(true);
+            }
+
             loopOnPause = true;
         } else {
             DeactivateVisuals();

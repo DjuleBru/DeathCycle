@@ -34,8 +34,13 @@ public class SpawnPoint : MonoBehaviour
             visualSelected.SetActive(false);
             championSelectionUI.gameObject.SetActive(false);
         }
-        if (loopOnRecording && recordingTimer > spawnPointVisualActiveTime) {
-            DeactivateVisuals();
+
+        if (loopOnRecording) {
+            recordingTimer += Time.deltaTime;
+
+            if (recordingTimer > spawnPointVisualActiveTime) {
+                DeactivateVisuals();
+            }
         }
     }
 

@@ -28,6 +28,7 @@ public class LoopManager : MonoBehaviour {
     [SerializeField] private float loopPauseTime;
     [SerializeField] private float loopTime;
     [SerializeField] private float loopEndBufferTime;
+    [SerializeField] private int loopMaxNumber;
 
     private float loopRecordingTimer = 0f;
     private float loopPlaybackTimer = 0f;
@@ -52,6 +53,10 @@ public class LoopManager : MonoBehaviour {
     }
 
     private void Update() {
+        if (LoopNumber == loopMaxNumber) {
+            // Game end
+            Debug.Break();
+        }
         switch (state) {
             case State.Pause:
 
@@ -121,7 +126,6 @@ public class LoopManager : MonoBehaviour {
                     });
 
                     loopPauseTimer = 0f;
-                    loopNumber++;
                 }
                 break;
 
@@ -138,6 +142,7 @@ public class LoopManager : MonoBehaviour {
                         state = state
                     });
                     loopEndBufferTimer = 0f;
+                    loopNumber++;
                 }
                 break;
         }

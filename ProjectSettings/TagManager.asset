@@ -48,6 +48,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackGround
+    uniqueID: 2129548399
+    locked: 0
   - name: Environment
     uniqueID: 1970088503
     locked: 0
@@ -59,6 +62,9 @@ TagManager:
     locked: 0
   - name: Particles
     uniqueID: 1832088047
+    locked: 0
+  - name: Ground
+    uniqueID: 2680821883
     locked: 0
   - name: FrontGround
     uniqueID: 957381147

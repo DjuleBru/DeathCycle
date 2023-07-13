@@ -19,7 +19,7 @@ MonoBehaviour:
   acceleration: 5
   deceleration: 8
   frictionAmount: 0.4
-  jumpForce: 6.75
+  jumpForce: 6.5
   jumpCoyoteTime: 0.1
   jumpInputBufferTime: 0.1
   jumpCutMultiplier: 0.5
