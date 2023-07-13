@@ -18,6 +18,7 @@ R pour retour (pendant la phase de séléction des champions)
 - Particularité : time-loop. Chaque boucle est sencée répeter les actions des champions enregistrées lors des boucles précédentes, ce qui amène un côté stratégique intéressant, et un joyeux bordel au bout de la 5ème loop que compose une manche normale
 - Gameplay : Pendant la première phase, séléctionner un spawnPoint et un champion avec A/D et E pour valider. Pendant la phase d'enregistrement: choper du mana, le drapeau, taper les adversaires.
 
+- Pour tester: Sur la scène "SandBox". Tu peux régler la loop time et la pause time dans le gameObject LoopManager (dans SceneEssentials).
 ## Mes impressions/retours:
 
 - J'ai un problème fondamental : l'enregistrement/playback des actions des champions est foireuse.
